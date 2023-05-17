@@ -244,7 +244,7 @@ print()
 #-------------------
 
 def main(trigger=None):  # trigger variable contains settings of pin or timer that caused interrupt (if used)
-    gc.collect()  # Loop runs device out of memory without this
+    #gc.collect()  # Loop runs device out of memory without running Garbage Collection
     #print('Free Memory: %sKB' % int(gc.mem_free()/1024)) 
 
     # Read Data
@@ -268,16 +268,8 @@ def main(trigger=None):  # trigger variable contains settings of pin or timer th
 # Main Loop
 #------------
 
-#while True:
-#    try:
-#        main()
-#        sleep(sleep_interval)
-#    except KeyboardInterrupt:
-#        wdt = WDT(timeout=86400000)  # Watchdog Timer cannot be disabled, so set to expire in 1 day
-#        exit()
-#    except:
-#        sleep(sleep_interval)
-#        reset()
+gc.threshold(int(gc.mem_free()/2))  # Run Garbage Collection when 50% of free memory used
+gc.enable()                         # Automatically run Garbage Collection using Threshold Value
 
 if __name__ == '__main__':
     from machine import Timer
