@@ -11,3 +11,5 @@ ampy -p /dev/ttyUSB0 mkdir uasyncio
 ampy -p /dev/ttyUSB0 put ~/source/micropython-lib/uasyncio/uasycio/__init__.py /uasyncio/__init__.py
 ampy -p /dev/ttyUSB0 put ~/source/micropython-lib/uasyncio.core/uasyncio/core.py /uasyncio/core.py
 ```
+
+![SparkFun ESP32 Thing](https://github.com/bgant/micropython/blob/main/projects/mqtt_uasyncio/main_power.png)
