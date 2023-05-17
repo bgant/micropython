@@ -1,0 +1,16 @@
+# Install Python Virtual Environment
+python3 -m pip install setuptools
+python3 -m pip install pyvenv
+python3 -m venv .venv  # Creates .venv files in your current directory
+
+# Use the Python Virtual Environment you just Created
+source .venv/bin/activate
+python3 -m pip list | egrep -v "Package|----" | awk '{print $1}' | xargs -I {} python3 -m pip install --upgrade {}
+python3 -m pip install mpremote
+python3 -m pip install esptool  # For flashing ESP32 ROM
+python3 -m pip list
+
+# Remove the Python Virtual Environment you just Created
+deactivate
+rm -r .venv
+
