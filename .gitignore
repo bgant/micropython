@@ -1,3 +1,14 @@
+# My Project Files to Ignore
+key_store.db
+key_store.txt
+config.py
+secret.py
+secrets.py
+apikey.txt
+inkyphat-stockmarket.ini
+inkyphat_stockmarket.ini
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
