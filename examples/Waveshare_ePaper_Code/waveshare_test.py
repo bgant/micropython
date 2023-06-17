@@ -57,6 +57,7 @@ epd = EPD_2in13_B_V4()
 epd.imageblack.fill(0xff)
 epd.imagered.fill(0xff)
 
+# Source: https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-vi-working-with-a-screen
 def load_image(filename):  # inverted pbm files
     with open(filename, 'rb') as f:
         f.readline()
