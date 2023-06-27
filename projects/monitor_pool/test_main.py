@@ -8,6 +8,10 @@ def main():
     if not (( water_now is water_last ) and ( air_now is air_last)):
         pool_display(water=water_now, air=air_now)
 
+    <do we do anything if both water_now and air_now are None?>
+    <if water_now is None doesn't that mean the probe is broken?>
+    <display 'ERROR' if water_now is None?>
+
     water_last = water_now
     air_last   = air_last
 
