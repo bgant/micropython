@@ -26,6 +26,10 @@ else:
     from sys import exit
     exit(1)
 
+# Rounding the way you expect in Math
+def roundTraditional(val,digits):
+   return round(val+10**(-len(str(val))-1), digits)
+
 # Source: https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-vi-working-with-a-screen
 def load_image(filename):  # inverted pbm files
     with open(filename, 'rb') as f:
@@ -69,10 +73,10 @@ def update(water=None, air=None, power=True, x=0):
         epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
     else:
         if water:
-            update_number(temp=str(water), x=160)
+            update_number(temp=str(int(roundTraditional(water,0))), x=160)
             update_text(text='water', x=220)
         if air:
-            update_number(temp=str(air), x=30)
+            update_number(temp=str(int(roundTraditional(air,0))), x=30)
             update_text(text='air', x=90)
     #epd.display(epd.buffer)
     DISPLAY()
