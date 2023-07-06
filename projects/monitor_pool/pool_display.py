@@ -33,7 +33,7 @@ def update_number(temp=None, x=0):
         font_writer = Writer(epd, GothamBlack_54_Numbers)
     textlen = font_writer.stringlen(text)
     Writer.set_textpos(epd, x, (EPD_WIDTH - textlen) // 2)
-    epd.rect(5,x,EPD_WIDTH-textlen,55,0xff,True)    # Draw White Rectangle before updated number is displayed
+    epd.rect((EPD_WIDTH-textlen)//2,x,textlen,55,0xff,True)  # Draw White Rectangle before updated number is displayed
     font_writer.printstring(text, invert=True)
 
 # Function to load text into Buffer:
