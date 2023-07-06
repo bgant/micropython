@@ -50,7 +50,7 @@ convert no-power.jpg -negate -dither FloydSteinberg -define dither:diffusion-amo
 import GothamBlack_54_Numbers  # https://github.com/peterhinch/micropython-font-to-py
 import GothamBlack_25
 import framebuf  # https://docs.micropython.org/en/latest/library/framebuf.html
-from writer import Writer  # https://github.com/peterhinch/micropython-font-to-py/tree/master/writer
+from writer_peterhinch import Writer  # https://github.com/peterhinch/micropython-font-to-py/tree/master/writer
 from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4  # https://github.com/waveshareteam/Pico_ePaper_Code/tree/main/python
 
 epd = EPD_2in13_B_V4()
@@ -67,7 +67,7 @@ def load_image(filename):  # inverted pbm files
     return framebuf.FrameBuffer(data, width, height, framebuf.MONO_HLSB)
 
 # Load Background Image into Buffer
-pool_pbm = load_image('pool.pbm')
+pool_pbm = load_image('pool_graphic.pbm')
 epd.blit(pool_pbm, 0, 0)
 
 # Load 'air' text into Buffer
@@ -98,7 +98,7 @@ def update_temp(temp=None, x=0):
     font_writer.printstring(text, invert=True)
 
 # Error No Power / No Wifi
-wifi_pbm = load_image('no-power-100.pbm')
+wifi_pbm = load_image('no_power_100px.pbm')
 epd.blit(wifi_pbm, (EPD_WIDTH - 100) // 2, 10)
 
 # Future For Loop to update temps

@@ -1,5 +1,9 @@
 '''
 
+import tinypico
+tinypico.set_dotstar_power(False)
+
+
 def main():
 
     water_now = pool_water()
@@ -16,6 +20,9 @@ def main():
     air_last   = air_last
 
     watchdog feed
+
+    tinypico.go_deepsleep(ms) or machine.deepsleep(ms) which effectively performs a hard reset on wake
+    machine.lightsleep(ms) to preserve RAM and networking (execution resumed from the point sleep was requested) so no need for Timer or main() function
 
 
 def power_off():
