@@ -24,10 +24,10 @@ import network
 wlan = network.WLAN(network.STA_IF)
 def wlan_connect(ssid, password):
     from ubinascii import hexlify
+    print('       MAC: ', hexlify(wlan.config('mac'),':').decode())
+    print(' WiFi SSID: ', ssid)
     if not wlan.active() or not wlan.isconnected():
         wlan.active(True)
-        print('       MAC: ', hexlify(wlan.config('mac'),':').decode())
-        print(' WiFi SSID: ', ssid)
         wlan.connect(ssid, password)
         start_wifi = utime.ticks_ms()
         while not wlan.isconnected():
@@ -45,16 +45,17 @@ def ntp():
     import ntptime
     ntptime.host = key_store.get('ntp_host')
     print("NTP Server: ", ntptime.host)
-    start_ntp = utime.ticks_ms()
-    ntptime.settime()
-    while utime.time() < 10000:  # Clock is not set with NTP if unixtime is less than 10000
+    attempts = 5  # Number of tries setting Time via NTP
+    while attempts:
         ntptime.settime()
-        if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 10 second timeout
-                print('NTP Timeout... Resetting Device')
-                reset()
+        attempts -= 1
+        if utime.time() > 10000:  # Clock is not set with NTP unless unixtime is greater than 10000
+            break
     print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
     print()
 
+wlan_connect(ssid_name,ssid_pass)
+ntp()
 
 # pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
 # pool_wifi.ntp()
