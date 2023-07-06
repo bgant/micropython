@@ -23,15 +23,8 @@ def load_image(filename):  # inverted pbm files
 pool_pbm = load_image('pool_graphic.pbm')
 epd.blit(pool_pbm, 0, 0)
 
-# Load 'water' text into Buffer
-text = 'water'
-font_writer = Writer(epd, GothamBlack_25)
-textlen = font_writer.stringlen(text)
-Writer.set_textpos(epd, 220, (EPD_WIDTH - textlen) // 2)
-font_writer.printstring(text, invert=True)
-
-# Function to update Temperature Numbers
-def update_temp(temp=None, x=0):
+# Function to update display Temperature:
+def update_number(temp=None, x=0):
     text = str(temp)
     if len(text) is 3:  # Temps above 99 do not display properly using GothamBlack_54
         import Arial_50_Numbers
@@ -42,9 +35,34 @@ def update_temp(temp=None, x=0):
     Writer.set_textpos(epd, x, (EPD_WIDTH - textlen) // 2)
     epd.rect(5,x,EPD_WIDTH-textlen,55,0xff,True)    # Draw White Rectangle before updated number is displayed
     font_writer.printstring(text, invert=True)
-    epd.display(epd.buffer)
 
-epd.init()
-update_temp(temp=str(int(pool_water.water_temp())), x=160)
-epd.delay_ms(2000)
-epd.sleep()
+# Function to load text into Buffer:
+def update_text(text=None, x=0):
+    font_writer = Writer(epd, GothamBlack_25)
+    textlen = font_writer.stringlen(text)
+    Writer.set_textpos(epd, x, (EPD_WIDTH - textlen) // 2)
+    font_writer.printstring(text, invert=True)
+ 
+# Main update display function:
+def update(water=None, air=None, power=True, x=0):
+    epd.init()
+    if not power:
+        # Error: No Power
+        epd.fill(0xff)  # Fill buffer with white space
+        power_pbm = load_image('no_power_100px.pbm')
+        epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
+    else:
+        if water:
+            update_number(temp=str(water), x=160)
+            update_text(text='water', x=220)
+        if air:
+            update_number(temp=str(air), x=30)
+            update_text(text='air', x=90)
+    epd.display(epd.buffer)
+    epd.delay_ms(2000)
+    epd.sleep()
+
+#epd.init()
+#update_temp(temp=str(int(pool_water.water_temp())), x=160)
+#epd.delay_ms(2000)
+#epd.sleep()
