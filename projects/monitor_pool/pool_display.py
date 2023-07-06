@@ -1,12 +1,30 @@
-from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait 
 import GothamBlack_54_Numbers
 import GothamBlack_25
 import framebuf
 from writer_peterhinch import Writer
 
+# Select Waveshare Display Type:
+from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
 epd = EPD_2in13_V3_Portrait()
-epd.Clear()
-epd.fill(0xff)  # Fill buffer with white space
+#from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
+#epd = EPD_2in13_B_V4()
+
+# Different Commands for Different Displays:
+if epd.__module__ is 'EPD_2in13_V3':
+    epd.Clear()
+    epd.fill(0xff)  # Fill buffer with white space
+    def DISPLAY():
+        epd.display(epd.buffer)
+elif epd.__module__ is 'EPD_2in13_B_V4':
+    epd.Clear(0xff,0xff)
+    epd.imageblack.fill(0xff)
+    epd.imagered.fill(0xff)
+    def DISPLAY():
+        epd.display()
+else:
+    print('Display Not Defined... Exiting')
+    from sys import exit
+    exit(1)
 
 # Source: https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-vi-working-with-a-screen
 def load_image(filename):  # inverted pbm files
@@ -56,6 +74,7 @@ def update(water=None, air=None, power=True, x=0):
         if air:
             update_number(temp=str(air), x=30)
             update_text(text='air', x=90)
-    epd.display(epd.buffer)
+    #epd.display(epd.buffer)
+    DISPLAY()
     epd.delay_ms(2000)
     epd.sleep()

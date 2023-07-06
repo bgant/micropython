@@ -23,7 +23,7 @@ def temp():
             thermoTempC = max31856.temperature(read_chip=True)
             #print(thermoTempC)
             attempts -= 1
-            if thermoTempC:
+            if int(thermoTempC):
                 break  # First reading is sometimes Zero (False) / Exit loop if thermoTempC is not Zero (True)
         thermoTempF = (thermoTempC * 9.0/5.0) + 32
         juncTempC = max31856.cold_junction()  # using data read at fault check
