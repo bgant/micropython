@@ -1,5 +1,3 @@
-import pool_water
-
 from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait 
 import GothamBlack_54_Numbers
 import GothamBlack_25
@@ -61,8 +59,3 @@ def update(water=None, air=None, power=True, x=0):
     epd.display(epd.buffer)
     epd.delay_ms(2000)
     epd.sleep()
-
-#epd.init()
-#update_temp(temp=str(int(pool_water.water_temp())), x=160)
-#epd.delay_ms(2000)
-#epd.sleep()
