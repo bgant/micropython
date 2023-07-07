@@ -71,7 +71,7 @@ def download_weather():
             json_data = response.json()
             #print(json_data)
             air_temp = json_data['main']['feels_like']  # ['feels_like'] or ['temp']
-            print(f'Air Feels Like: {air_temp} F')
+            print(f'Air Feels Like:    {air_temp} F')
             return air_temp
         except:
             return None

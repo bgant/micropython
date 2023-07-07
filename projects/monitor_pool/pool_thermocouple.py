@@ -18,11 +18,11 @@ def temp():
         attempts = 10  # Number of tries
         while attempts:
             thermoTempC = max31856.temperature(read_chip=True)
-            print(f'Thermocouple:   {thermoTempC} C')
+            print(f'Thermocouple Read: {thermoTempC} C')
             if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 212 ):  # First reading is sometimes Zero / Sometimes crazy high
                 break
             attempts -= 1
             sleep(2)
         thermoTempF = (thermoTempC * 9.0/5.0) + 32
-        print(f'Thermocouple:   {thermoTempF} F')
+        print(f'Water Temp:        {thermoTempF} F')
         return thermoTempF
