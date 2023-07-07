@@ -21,13 +21,15 @@ def main(timer):
     gc.collect()
     air_now   = pool_wifi.download_weather()
     power_now = True  # Placeholder
-    if not (( int(roundTraditional(water_now,0)) is water_last ) and ( int(roundTraditional(air_now,0)) is air_last)):
+    if type(water_now) is str:
+        pool_display.update(water=water_now, air=air_now, power=power_now)
+    elif not (( int(roundTraditional(water_now,0)) is water_last ) and ( int(roundTraditional(air_now,0)) is air_last)):
         pool_display.update(water=water_now, air=air_now, power=power_now)
     else:
         print('No Temperature Changes... Skipping Display Update...')
     print('='*45)
     print()
-    water_last = None if water_now is None else int(roundTraditional(water_now,0))
+    water_last = None if ( water_now is None ) or ( type(water_now) is str ) else int(roundTraditional(water_now,0))
     air_last = None if air_now is None else int(roundTraditional(air_now,0))
 
 # ESP32 has four hardware timers to choose from (0 through 3)

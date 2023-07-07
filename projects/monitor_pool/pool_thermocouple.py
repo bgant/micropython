@@ -19,7 +19,7 @@ def temp():
         while attempts:
             thermoTempC = max31856.temperature(read_chip=True)
             print(f'Thermocouple:   {thermoTempC} C')
-            if int(thermoTempC) is not 0:  # First reading is sometimes Zero
+            if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 212 ):  # First reading is sometimes Zero / Sometimes crazy high
                 break
             attempts -= 1
             sleep(1)
