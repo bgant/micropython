@@ -71,6 +71,11 @@ def update(water=None, air=None, power=True, x=0):
         epd.fill(0xff)  # Fill buffer with white space
         power_pbm = load_image('no_power_100px.pbm')
         epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
+    elif type(water) is str:
+        # Error: Thermocouple Fault
+        epd.fill(0xff)  # Fill buffer with white space
+        power_pbm = load_image('fault_100px.pbm')
+        epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
     else:
         if water:
             update_number(temp=str(int(roundTraditional(water,0))), x=160)

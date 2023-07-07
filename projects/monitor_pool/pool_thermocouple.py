@@ -11,20 +11,15 @@ def temp():
     max31856 = Max31856(spi, cs, tc_type)
     fault, fault_string = max31856.faults(read_chip=True)  # read in all data from max31856 chip
     if fault:
-        from machine import reset
-        print(f'FAULT: {fault_string}... Resetting Device')
-        from time import sleep
-        sleep(60)
-        reset()
-        #return f'FAULT: {fault_string}'
+        return fault_string  # Only fix found so far is to cut power completely
     else:
         attempts = 5  # Try 5 readings max
         while attempts:
             thermoTempC = max31856.temperature(read_chip=True)
             #print(thermoTempC)
             attempts -= 1
-            if int(thermoTempC):
-                break  # First reading is sometimes Zero (False) / Exit loop if thermoTempC is not Zero (True)
+            if int(thermoTempC) is not 0:  # First reading is sometimes Zero
+                break
         thermoTempF = (thermoTempC * 9.0/5.0) + 32
         juncTempC = max31856.cold_junction()  # using data read at fault check
         juncTempF = (juncTempC * 9.0/5.0) + 32
