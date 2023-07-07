@@ -63,15 +63,18 @@ def is_hour_between(start, end, now):
     return bool(is_between)
 
 # Download Air Temperature:
+JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + key_store.get('lat') + '&lon=' + key_store.get('lon') + '&units=imperial&appid=' + key_store.get('appid')
 def download_weather():
     if is_hour_between(13,3,utime.localtime()[3]):  # Run between 8CST/13UTC and 23CST/4UTC to conserve API Calls
-        JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + key_store.get('lat') + '&lon=' + key_store.get('lon') + '&units=imperial&appid=' + key_store.get('appid')
-        response = urequests.get(JSON_URL)
-        json_data = response.json()
-        #print(json_data)
-        air_temp = json_data['main']['feels_like']  # ['feels_like'] or ['temp']
-        print(f'Air Feels Like: {air_temp} F')
-        return air_temp
+        try:
+            response = urequests.get(JSON_URL)
+            json_data = response.json()
+            #print(json_data)
+            air_temp = json_data['main']['feels_like']  # ['feels_like'] or ['temp']
+            print(f'Air Feels Like: {air_temp} F')
+            return air_temp
+        except:
+            return None
     else:
         print(f'Skip Night-time Air Reading to conserve API calls...')
         return None
