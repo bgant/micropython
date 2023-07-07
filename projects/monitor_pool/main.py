@@ -18,6 +18,7 @@ def main(timer):
     global water_now
     global air_now
     water_now = pool_thermocouple.temp()
+    gc.collect()
     air_now   = pool_wifi.download_weather()
     power_now = True  # Placeholder
     if not (( int(roundTraditional(water_now,0)) is water_last ) and ( int(roundTraditional(air_now,0)) is air_last)):
@@ -28,8 +29,6 @@ def main(timer):
     print()
     water_last = None if water_now is None else int(roundTraditional(water_now,0))
     air_last = None if air_now is None else int(roundTraditional(air_now,0))
-    gc.collect()
-
 
 # ESP32 has four hardware timers to choose from (0 through 3)
 from machine import Timer
