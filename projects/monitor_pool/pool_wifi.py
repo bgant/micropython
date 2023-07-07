@@ -68,7 +68,7 @@ def is_hour_between(start, end, now):
 
 # Download Air Temperature:
 def download_weather():
-    if is_hour_between(11,3,utime.localtime()[3]):  # Run between 7CST/11UTC and 23CST/4UTC to conserve API Calls
+    if is_hour_between(13,3,utime.localtime()[3]):  # Run between 8CST/13UTC and 23CST/4UTC to conserve API Calls
         JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + key_store.get('lat') + '&lon=' + key_store.get('lon') + '&units=imperial&appid=' + key_store.get('appid')
         response = urequests.get(JSON_URL)
         json_data = response.json()
