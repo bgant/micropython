@@ -3,6 +3,7 @@ import utime
 import urequests
 import network
 import ntptime
+from ubinascii import hexlify
 
 # Load secrets from local key_store.db:
 try:
@@ -23,7 +24,6 @@ except:
 # Connect to WiFI:
 wlan = network.WLAN(network.STA_IF)
 def wlan_connect(ssid, password):
-    from ubinascii import hexlify
     print()
     print('       MAC: ', hexlify(wlan.config('mac'),':').decode())
     print(' WiFi SSID: ', ssid)
@@ -43,8 +43,8 @@ def wlan_connect(ssid, password):
     print('       DNS: ', wlan.ifconfig()[3])
 
 # Set RTC using NTP:
+ntptime.host = key_store.get('ntp_host')
 def ntp():
-    ntptime.host = key_store.get('ntp_host')
     print("NTP Server: ", ntptime.host)
     attempts = 5  # Number of tries setting Time via NTP
     while attempts:

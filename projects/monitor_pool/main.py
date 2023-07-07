@@ -35,6 +35,7 @@ def main(timer_main):
         pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
         gc.collect()
         air_now   = pool_wifi.download_weather()
+    print()
 
     # Update Display:
     if type(water_now) is str:  # Fault string
