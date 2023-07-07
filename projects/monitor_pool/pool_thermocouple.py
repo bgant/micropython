@@ -15,16 +15,14 @@ def temp():
         print(f'THERMOCOUPLE FAULT: {fault_string}')
         return fault_string  # Only fix found so far is to cut power completely
     else:
-        attempts = 5  # Try 5 readings max
+        attempts = 10  # Number of tries
         while attempts:
             thermoTempC = max31856.temperature(read_chip=True)
             print(f'Thermocouple:   {thermoTempC} C')
             if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 212 ):  # First reading is sometimes Zero / Sometimes crazy high
                 break
             attempts -= 1
-            sleep(1)
+            sleep(2)
         thermoTempF = (thermoTempC * 9.0/5.0) + 32
-        juncTempC = max31856.cold_junction()  # using data read at fault check
-        juncTempF = (juncTempC * 9.0/5.0) + 32
+        print(f'Thermocouple:   {thermoTempF} F')
         return thermoTempF
-

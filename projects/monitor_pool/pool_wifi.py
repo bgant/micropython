@@ -1,8 +1,8 @@
-
-
 from machine import reset
 import utime
 import urequests
+import network
+import ntptime
 
 # Load secrets from local key_store.db:
 try:
@@ -21,22 +21,22 @@ except:
     reset()
 
 # Connect to WiFI:
-import network
 wlan = network.WLAN(network.STA_IF)
 def wlan_connect(ssid, password):
     from ubinascii import hexlify
     print()
     print('       MAC: ', hexlify(wlan.config('mac'),':').decode())
     print(' WiFi SSID: ', ssid)
-    if not wlan.active() or not wlan.isconnected():
+    while not wlan.isconnected():
         wlan.active(True)
         wlan.connect(ssid, password)
         start_wifi = utime.ticks_ms()
         while not wlan.isconnected():
-            if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second timeout
-                print('Wifi Timeout... Resetting Device')
-                utime.sleep(2)
-                reset()
+            if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second connection timeout
+                print('Wifi Timeout... Trying Again')
+                wlan.active(False)
+                utime.sleep(5)
+                break
     print('        IP: ', wlan.ifconfig()[0])
     print('    Subnet: ', wlan.ifconfig()[1])
     print('   Gateway: ', wlan.ifconfig()[2])
@@ -44,7 +44,6 @@ def wlan_connect(ssid, password):
 
 # Set RTC using NTP:
 def ntp():
-    import ntptime
     ntptime.host = key_store.get('ntp_host')
     print("NTP Server: ", ntptime.host)
     attempts = 5  # Number of tries setting Time via NTP
@@ -55,9 +54,6 @@ def ntp():
             break
     print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
     print()
-
-wlan_connect(ssid_name,ssid_pass)
-ntp()
 
 # Source: https://stackoverflow.com/questions/20518122/python-working-out-if-time-now-is-between-two-times
 def is_hour_between(start, end, now):
@@ -80,18 +76,11 @@ def download_weather():
         print(f'Skip Night-time Air Reading to conserve API calls...')
         return None
 
+# Start Wifi and NTP on module import
+wlan_connect(ssid_name,ssid_pass)
+ntp()
+
 # pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
 # pool_wifi.ntp()
 # pool_wifi.wlan.active()
 # pool_wifi.wlan.isconnected()
-
-
-# Usage in Main Loop:
-# air_temp = pool_wifi(water_temp=water_now)  # Turn on Wifi, Send Water Temp to InfluxDB, Get Air Temp, Turn off Wifi
-
-# try:
-#     all the wifi stuff
-# except:
-#     return None  # If try fails return None and display doesn't show air temp
-
-
