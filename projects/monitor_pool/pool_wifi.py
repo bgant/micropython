@@ -59,17 +59,11 @@ def ntp():
     print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
     print()
 
-# Source: https://stackoverflow.com/questions/20518122/python-working-out-if-time-now-is-between-two-times
-def is_hour_between(start, end, now):
-    is_between = False
-    is_between |= start <= now <= end
-    is_between |= end < start and (start <= now or now <= end)
-    return bool(is_between)
-
 # Download Air Temperature:
 JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + key_store.get('lat') + '&lon=' + key_store.get('lon') + '&units=imperial&appid=' + key_store.get('appid')
+download_hours = [h % 24 for h in range(13,28)]  # Between 8CST/13CST and 23CST/4UTC
 def download_weather():
-    if is_hour_between(13,3,utime.localtime()[3]):  # Run between 8CST/13UTC and 23CST/4UTC to conserve API Calls
+    if utime.localtime()[3] in download_hours:   # Run during certain hours to conserve API Calls
         try:
             response = urequests.get(JSON_URL)
             json_data = response.json()

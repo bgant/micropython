@@ -35,7 +35,6 @@ def main(timer_main):
         pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
         gc.collect()
         air_now   = pool_wifi.download_weather()
-    print()
     
     # Update Display:
     water_temp = int(roundTraditional(water_now,0)) if type(water_now) is float else water_now  # str or None
@@ -45,7 +44,6 @@ def main(timer_main):
     else:
         pool_display.update(water=water_now, air=air_now, power=power_now)
     print('='*45)
-    print()
     
     # End of loop cleanup:
     water_last = water_now if not type(water_now) is float else int(roundTraditional(water_now,0))

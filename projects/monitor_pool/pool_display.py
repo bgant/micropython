@@ -72,7 +72,7 @@ def update_text(text=None, x=0):
 def update(water=None, air=None, power=True, x=0):
     epd.init()
     if not power:
-        # Error: No Power
+        print('Power Disconnected...')
         epd.fill(0xff)  # Fill buffer with white space
         power_pbm = load_image('no_power_100px.pbm')
         epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
