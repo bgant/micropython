@@ -48,10 +48,14 @@ def ntp():
     print("NTP Server: ", ntptime.host)
     attempts = 5  # Number of tries setting Time via NTP
     while attempts:
-        ntptime.settime()
+        try:
+            ntptime.settime()
+        except:
+            pass
         attempts -= 1
         if utime.time() > 10000:  # Clock is not set with NTP unless unixtime is greater than 10000
             break
+        utime.sleep(2)
     print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
     print()
 
