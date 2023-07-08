@@ -276,7 +276,7 @@ class EPD_2in13_V3_Portrait(framebuf.FrameBuffer):
     parameter:
     '''
     def init(self):
-        print('Display init...')
+        print('Wake Display...')
         self.reset()
         self.delay_ms(100)
         
@@ -513,7 +513,7 @@ class EPD_2in13_V3_Landscape(framebuf.FrameBuffer):
         self.send_data((Ystart >> 8) & 0xFF)
 
     def init(self):
-        print('Display init...')
+        print('Wake Display...')
         self.reset()
         self.delay_ms(100)
         
