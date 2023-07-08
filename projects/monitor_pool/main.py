@@ -36,19 +36,19 @@ def main(timer_main):
         gc.collect()
         air_now   = pool_wifi.download_weather()
     print()
-
+    
     # Update Display:
-    if type(water_now) is str:  # Fault string
-        pool_display.update(water=water_now, air=air_now, power=power_now)
-    elif (int(roundTraditional(water_now,0)) is not water_last) or (int(roundTraditional(air_now,0)) is not air_last):
-        pool_display.update(water=water_now, air=air_now, power=power_now)
-    else:
+    water_temp = int(roundTraditional(water_now,0)) if type(water_now) is float else water_now  # str or None
+    air_temp   = int(roundTraditional(air_now,0))   if type(air_now)   is float else air_now    # None
+    if (water_temp is water_last) and (air_temp is air_last):
         print('No Temperature Changes... Skipping Display Update...')
+    else:
+        pool_display.update(water=water_now, air=air_now, power=power_now)
     print('='*45)
     print()
     
-    # Cleanup at end of loop:
-    water_last = None if ( water_now is None ) or ( type(water_now) is str ) else int(roundTraditional(water_now,0))
+    # End of loop cleanup:
+    water_last = water_now if not type(water_now) is float else int(roundTraditional(water_now,0))
     air_last = None if air_now is None else int(roundTraditional(air_now,0))
     wdt.feed()
 
@@ -60,6 +60,7 @@ timer_main.init(period=600000, mode=Timer.PERIODIC, callback=main)
 
 # Reset Every 12 hours to Clear Screen:
 def reset_device(timer_reset):
+    print('Resetting Device to Clear Screen...')
     reset()
 timer_reset = Timer(1)
 timer_reset.init(period=43200000, mode=Timer.PERIODIC, callback=reset_device)

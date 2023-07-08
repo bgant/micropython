@@ -184,11 +184,11 @@ class EPD_2in13_V3_Portrait(framebuf.FrameBuffer):
     parameter:
     '''
     def ReadBusy(self):
-        print('busy')
+        #print('busy')
         self.delay_ms(10)
         while(self.digital_read(self.busy_pin) == 1):      # 0: idle, 1: busy
             self.delay_ms(10)    
-        print('busy release')
+        #print('busy release')
     
     '''
     function : Turn On Display
@@ -276,7 +276,7 @@ class EPD_2in13_V3_Portrait(framebuf.FrameBuffer):
     parameter:
     '''
     def init(self):
-        print('init')
+        print('Display init...')
         self.reset()
         self.delay_ms(100)
         
@@ -457,11 +457,11 @@ class EPD_2in13_V3_Landscape(framebuf.FrameBuffer):
         self.digital_write(self.cs_pin, 1)
 
     def ReadBusy(self):
-        print('busy')
+        #print('busy')
         self.delay_ms(10)
         while(self.digital_read(self.busy_pin) == 1):      # 0: idle, 1: busy
             self.delay_ms(10)    
-        print('busy release')
+        #print('busy release')
 
     def TurnOnDisplay(self):
         self.send_command(0x22)  # Display Update Control
@@ -513,7 +513,7 @@ class EPD_2in13_V3_Landscape(framebuf.FrameBuffer):
         self.send_data((Ystart >> 8) & 0xFF)
 
     def init(self):
-        print('init')
+        print('Display init...')
         self.reset()
         self.delay_ms(100)
         

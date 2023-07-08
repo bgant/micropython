@@ -14,12 +14,14 @@ if epd.__module__ is 'EPD_2in13_V3':
     epd.Clear()
     epd.fill(0xff)  # Fill buffer with white space
     def DISPLAY():
+        print('Updating Display...')
         epd.display(epd.buffer)
 elif epd.__module__ is 'EPD_2in13_B_V4':
     epd.Clear(0xff,0xff)
     epd.imageblack.fill(0xff)
     epd.imagered.fill(0xff)
     def DISPLAY():
+        print('Updating Display...')
         epd.display()
 else:
     print('Display Not Defined... Exiting')
@@ -42,15 +44,18 @@ def load_image(filename):  # inverted pbm files
 # Load Background Image into Buffer
 pool_pbm = load_image('pool_graphic.pbm')
 epd.blit(pool_pbm, 0, 0)
+DISPLAY()
+epd.delay_ms(2000)
+epd.sleep()
 
 # Function to update display Temperature:
 def update_number(temp=None, x=0):
     text = str(temp)
     if len(text) is 3:  # Temps above 99 do not display properly using GothamBlack_54
         import Arial_50_Numbers
-        font_writer = Writer(epd, Arial_50_Numbers)
+        font_writer = Writer(epd, Arial_50_Numbers, verbose=False)
     else:
-        font_writer = Writer(epd, GothamBlack_54_Numbers)
+        font_writer = Writer(epd, GothamBlack_54_Numbers, verbose=False)
     textlen = font_writer.stringlen(text)
     Writer.set_textpos(epd, x, (EPD_WIDTH - textlen) // 2)
     epd.rect(6,x,EPD_WIDTH-12,55,0xff,True)  # Draw White Rectangle before updated number is displayed
@@ -58,7 +63,7 @@ def update_number(temp=None, x=0):
 
 # Function to load text into Buffer:
 def update_text(text=None, x=0):
-    font_writer = Writer(epd, GothamBlack_25)
+    font_writer = Writer(epd, GothamBlack_25, verbose=False)
     textlen = font_writer.stringlen(text)
     Writer.set_textpos(epd, x, (EPD_WIDTH - textlen) // 2)
     font_writer.printstring(text, invert=True)
