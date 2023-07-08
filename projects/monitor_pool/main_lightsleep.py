@@ -122,6 +122,8 @@ from machine import reset, WDT, Timer, Pin, lightsleep
 wdt = WDT(timeout=780000)  # Set 13-minute Hardware Watchdog Timer
 from time import sleep, localtime
 from esp32 import raw_temperature
+from tinypico import set_dotstar_power
+set_dotstar_power(False)
 
 
 ###################################
