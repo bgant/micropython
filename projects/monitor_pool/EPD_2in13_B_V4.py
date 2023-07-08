@@ -108,10 +108,10 @@ class EPD_2in13_B_V4(framebuf.FrameBuffer):
         self.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
-        print('busy')
+        #print('busy')
         while(self.digital_read(self.busy_pin) == 1): 
             self.delay_ms(10) 
-        print('busy release')
+        #print('busy release')
         self.delay_ms(20)
         
     def TurnOnDisplay(self):
@@ -139,7 +139,7 @@ class EPD_2in13_B_V4(framebuf.FrameBuffer):
     
 
     def init(self):
-        print('init')
+        print('Display init...')
         self.reset()
         
         self.ReadBusy()   
