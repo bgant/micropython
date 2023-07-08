@@ -1,9 +1,17 @@
+###################################
+# Built-in Modules: help('modules')
+###################################
 from machine import reset
 import utime
 import urequests
 import network
 import ntptime
 from ubinascii import hexlify
+
+
+###################################
+# My Custom Modules on Github
+###################################
 from client_id import client_id
 
 

@@ -36,8 +36,9 @@ TinyS3 to Waveshare Pinout:
 Download Files to Upload to Micropython Device:
     wget -O EPD_2in13_V3.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13-V3.py
     wget -O EPD_2in13_B_V4.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13-B_V4.py
-    wget https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
+    wget -O writer_peterhinch.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
     wget -O Arial_50_Numbers.py https://raw.githubusercontent.com/peterhinch/micropython-nano-gui/master/gui/fonts/arial_50.py
+    wget -O max31856_eliotb.py https://raw.githubusercontent.com/eliotb/micropython-max31856/master/max31856.py
 
 Edit EPD_2in13_B_V4.py Module to work with SPI:
     RST_PIN         = 21
@@ -117,7 +118,7 @@ JSON Web Token (jwt)
 ###################################
 # Built-in Modules: help('modules')
 ###################################
-from machine import reset, WDT, Timer
+from machine import reset, WDT, Timer, Pin
 wdt = WDT(timeout=780000)  # Set 13-minute Hardware Watchdog Timer
 from time import sleep
 from esp32 import raw_temperature
@@ -146,6 +147,7 @@ water_now  = None
 air_now    = None
 water_last = None
 air_last   = None
+vbus       = Pin(9)  # Detect 5V Present
 
 
 ###################################
@@ -159,7 +161,7 @@ def main(timer_main):
     
     # Collect Data:
     cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
-    power_now = True  # Placeholder for checking VBUS Pin(33)
+    power_now = bool(vbus())       # Detect 5V Present
     water_now = pool_thermocouple.temp()
     if pool_wifi.wlan.isconnected():
         gc.collect()

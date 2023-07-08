@@ -1,21 +1,30 @@
+###################################
+# Built-in Modules: help('modules')
+###################################
+import framebuf
+
+
+###################################
+# 3rd-Party Modules on Github
+###################################
+from writer_peterhinch import Writer
+# Source: wget -O writer_peterhinch.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
+
+
+###################################
+# My Custom Modules on Github
+###################################
 import GothamBlack_54_Numbers
 import GothamBlack_25
-import framebuf
-from writer_peterhinch import Writer
-
-
-###################################
-# Select Waveshare Display
-###################################
 from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
-epd = EPD_2in13_V3_Portrait()
 #from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
-#epd = EPD_2in13_B_V4()
 
 
 ###################################
 # Waveshare Display Differences
 ###################################
+epd = EPD_2in13_V3_Portrait()
+#epd = EPD_2in13_B_V4()
 if epd.__module__ is 'EPD_2in13_V3':
     epd.Clear()
     epd.fill(0xff)  # Fill buffer with white space
@@ -72,6 +81,7 @@ def update_number(temp=None, x=0):
     text = str(temp)
     if len(text) is 3:  # Temps above 99 do not display properly using GothamBlack_54
         import Arial_50_Numbers
+        # Source: wget -O Arial_50_Numbers.py https://raw.githubusercontent.com/peterhinch/micropython-nano-gui/master/gui/fonts/arial_50.py
         font_writer = Writer(epd, Arial_50_Numbers, verbose=False)
     else:
         font_writer = Writer(epd, GothamBlack_54_Numbers, verbose=False)

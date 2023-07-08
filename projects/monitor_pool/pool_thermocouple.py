@@ -1,15 +1,30 @@
-# Source: https://github.com/eliotb/micropython-max31856
-from max31856_eliotb import Max31856
+###################################
+# Built-in Modules: help('modules')
+###################################
 from machine import Pin, SPI
 from time import sleep
 
+
+###################################
+# 3rd-Party Modules on Github
+###################################
+from max31856_eliotb import Max31856
+# Source: wget -O max31856_eliotb.py https://raw.githubusercontent.com/eliotb/micropython-max31856/master/max31856.py
+
+
+###################################
+# Max31856 Settings
+###################################
 tc_type = 'K'  # K-Type Thermocouple
 spi = SPI(1, baudrate=4000_000)   # Shared with Waveshare Display
 cs = Pin(33, Pin.OUT)  # Assign its own chip select (CS) pin and start it high
 
-# 'FAULT: tchigh+open+OV/UV+cjlow+tclow+cjhigh' error if you try to share the SPI bus
+
+###################################
+# Read Thermocouple Temperature
+###################################
 def temp():
-    max31856 = Max31856(spi, cs, tc_type)
+    max31856 = Max31856(spi, cs, tc_type)  # 'FAULT: tchigh+open+OV/UV+cjlow+tclow+cjhigh' error if you try to share the SPI bus
     fault, fault_string = max31856.faults(read_chip=True)  # read in all data from max31856 chip
     if fault:
         print(f'THERMOCOUPLE FAULT: {fault_string}')
