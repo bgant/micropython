@@ -3,13 +3,19 @@ import GothamBlack_25
 import framebuf
 from writer_peterhinch import Writer
 
-# Select Waveshare Display Type:
+
+###################################
+# Select Waveshare Display
+###################################
 from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
 epd = EPD_2in13_V3_Portrait()
 #from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
 #epd = EPD_2in13_B_V4()
 
-# Different Commands for Different Displays:
+
+###################################
+# Waveshare Display Differences
+###################################
 if epd.__module__ is 'EPD_2in13_V3':
     epd.Clear()
     epd.fill(0xff)  # Fill buffer with white space
@@ -28,11 +34,17 @@ else:
     from sys import exit
     exit(1)
 
-# Rounding the way you expect in Math
+
+###################################
+# Rounding like you learned in Math
+###################################
 def roundTraditional(val,digits):
    return round(val+10**(-len(str(val))-1), digits)
 
-# Source: https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-vi-working-with-a-screen
+
+###################################
+# Load PBM Image to Display Buffer
+###################################
 def load_image(filename):  # inverted pbm files
     with open(filename, 'rb') as f:
         f.readline()
@@ -40,15 +52,22 @@ def load_image(filename):  # inverted pbm files
         width, height = [int(v) for v in f.readline().split()]
         data = bytearray(f.read())
     return framebuf.FrameBuffer(data, width, height, framebuf.MONO_HLSB)
+# Source: https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-vi-working-with-a-screen
 
-# Load Background Image into Buffer
+
+###################################
+# Load Background Pool Image
+###################################
 pool_pbm = load_image('pool_graphic.pbm')
 epd.blit(pool_pbm, 0, 0)
 DISPLAY()
 epd.delay_ms(2000)
 epd.sleep()
 
-# Function to update display Temperature:
+
+###################################
+# Update Display Numbers
+###################################
 def update_number(temp=None, x=0):
     text = str(temp)
     if len(text) is 3:  # Temps above 99 do not display properly using GothamBlack_54
@@ -61,14 +80,20 @@ def update_number(temp=None, x=0):
     epd.rect(6,x,EPD_WIDTH-12,55,0xff,True)  # Draw White Rectangle before updated number is displayed
     font_writer.printstring(text, invert=True)
 
-# Function to load text into Buffer:
+
+###################################
+# Update Display Text
+###################################
 def update_text(text=None, x=0):
     font_writer = Writer(epd, GothamBlack_25, verbose=False)
     textlen = font_writer.stringlen(text)
     Writer.set_textpos(epd, x, (EPD_WIDTH - textlen) // 2)
     font_writer.printstring(text, invert=True)
- 
-# Main update display function:
+
+
+###################################
+# Main Display Update Function
+###################################
 def update(water=None, air=None, power=True, x=0):
     epd.init()
     if not power:

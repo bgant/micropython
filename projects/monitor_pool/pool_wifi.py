@@ -4,8 +4,12 @@ import urequests
 import network
 import ntptime
 from ubinascii import hexlify
+from client_id import client_id
 
-# Load secrets from local key_store.db:
+
+###################################
+# Load secrets from key_store.db
+###################################
 try:
     import key_store
 except:
@@ -21,7 +25,10 @@ except:
     key_store.init()
     reset()
 
-# Connect to WiFI:
+
+###################################
+# Connect to Wifi
+###################################
 wlan = network.WLAN(network.STA_IF)
 def wlan_connect(ssid, password):
     print()
@@ -42,7 +49,10 @@ def wlan_connect(ssid, password):
     print('   Gateway: ', wlan.ifconfig()[2])
     print('       DNS: ', wlan.ifconfig()[3])
 
-# Set RTC using NTP:
+
+###################################
+# Set Device Clock using NTP
+###################################
 ntptime.host = key_store.get('ntp_host')
 def ntp():
     print("NTP Server: ", ntptime.host)
@@ -59,7 +69,10 @@ def ntp():
     print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
     print()
 
-# Download Air Temperature:
+
+###################################
+# Download Air Temperature
+###################################
 JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + key_store.get('lat') + '&lon=' + key_store.get('lon') + '&units=imperial&appid=' + key_store.get('appid')
 download_hours = [h % 24 for h in range(13,28)]  # Between 8CST/13CST and 23CST/4UTC
 def download_weather():
@@ -77,9 +90,39 @@ def download_weather():
         print(f'Skip Night-time Air Reading to conserve API calls...')
         return None
 
-# Start Wifi and NTP on module import
+
+###################################
+# Send Data to InfluxDB Function
+###################################
+server      = key_store.get('server')
+port        = key_store.get('port')
+database    = key_store.get('database')
+measurement = key_store.get('measurement')
+jwt         = key_store.get('jwt')
+def send_to_influxdb(water=None,cpu=None):
+    if '443' in port:
+        url = f'https://{server}/influx/write?db={database}'
+    else:
+        url = f'http://{server}:{port}/write?db={database}'
+    headers = {
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Authorization': ''
+    }
+    headers['Authorization'] = f'Bearer {jwt}'
+    data = f'{measurement},device={client_id} waterF={water},cpuF={cpu}'
+    response = urequests.post(url, headers=headers, data=data)
+    if '204' in str(response.status_code):  # HTTP Status 204 (No Content) indicates server fulfilled request
+        print(f'InfluxDB: {database} \t Measurement: {data} \t Status: {response.status_code} Success')
+    else:
+        print(f'InfluxDB: {database} \t Measurement: {data} \t Status: {response.status_code} Failed')
+
+
+###################################
+# Start Wifi/NTP on module import
+###################################
 wlan_connect(ssid_name,ssid_pass)
 ntp()
+
 
 # pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
 # pool_wifi.ntp()

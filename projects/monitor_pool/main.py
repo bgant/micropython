@@ -6,18 +6,28 @@ import pool_display
 import pool_wifi
 import pool_thermocouple
 from client_id import client_id
+from esp32 import raw_temperature
 
-# Rounding the way you expect in Math
+
+###################################
+# Rounding like you learned in Math
+###################################
 def roundTraditional(val,digits):
    return round(val+10**(-len(str(val))-1), digits)
 
-# Global Values outside of main(timer_main) loop function:
+
+###################################
+# Global Values to Track
+###################################
 water_now  = None
 air_now    = None
 water_last = None
 air_last   = None
 
-# Main loop:
+
+###################################
+# Main Loop Function
+###################################
 def main(timer_main):
     global water_last
     global air_last
@@ -25,6 +35,7 @@ def main(timer_main):
     global air_now
     
     # Collect Data:
+    cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
     power_now = True  # Placeholder for checking VBUS Pin(33)
     water_now = pool_thermocouple.temp()
     if pool_wifi.wlan.isconnected():
@@ -35,6 +46,7 @@ def main(timer_main):
         pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
         gc.collect()
         air_now   = pool_wifi.download_weather()
+    pool_wifi.send_to_influxdb(water=water_now,cpu=cpu_now)
     
     # Update Display:
     water_temp = int(roundTraditional(water_now,0)) if type(water_now) is float else water_now  # str or None
@@ -50,7 +62,12 @@ def main(timer_main):
     air_last = None if air_now is None else int(roundTraditional(air_now,0))
     wdt.feed()
 
-# Run main loop through Timer to retain access to the REPL:
+
+###################################
+# Timers to retain access to REPL
+###################################
+
+# Run the main loop through Timer:
 timer_main = Timer(0)
 main(timer_main) # Initial Run on Boot
 timer_main.init(period=600000, mode=Timer.PERIODIC, callback=main)
