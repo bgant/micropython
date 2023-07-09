@@ -186,7 +186,7 @@ def main(timer_main):
         print('No Temperature Changes... Skipping Display Update...')
     else:
         pool_display.update(water=water_now, air=air_now, power=power_now)
-    print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
+    #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
     print('='*45)
     
     # End of loop cleanup:
