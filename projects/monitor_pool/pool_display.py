@@ -25,16 +25,19 @@ from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
 ###################################
 epd = EPD_2in13_V3_Portrait()
 #epd = EPD_2in13_B_V4()
+
 if epd.__module__ is 'EPD_2in13_V3':
     epd.Clear()
-    epd.fill(0xff)  # Fill buffer with white space
+    def FILL():
+        epd.fill(0xff)  # Fill buffer with white space
     def DISPLAY():
         print('Updating Display...')
         epd.display(epd.buffer)
 elif epd.__module__ is 'EPD_2in13_B_V4':
     epd.Clear(0xff,0xff)
-    epd.imageblack.fill(0xff)
-    epd.imagered.fill(0xff)
+    def FILL():
+        epd.imageblack.fill(0xff)
+        epd.imagered.fill(0xff)
     def DISPLAY():
         print('Updating Display...')
         epd.display()
@@ -68,10 +71,6 @@ def load_image(filename):  # inverted pbm files
 # Load Background Pool Image
 ###################################
 pool_pbm = load_image('pool_graphic.pbm')
-epd.blit(pool_pbm, 0, 0)
-DISPLAY()
-epd.delay_ms(2000)
-epd.sleep()
 
 
 ###################################
@@ -110,7 +109,7 @@ def update(water=None, air=None, power=True, x=0):
     epd.delay_ms(2000)
     if not power:
         print('Power Disconnected...')
-        epd.fill(0xff)  # Fill buffer with white space
+        FILL()  # Fill buffer with white space
         power_pbm = load_image('no_power_100px.pbm')
         epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
         DISPLAY()
@@ -119,6 +118,8 @@ def update(water=None, air=None, power=True, x=0):
         from sys import exit
         exit(1)
     else:
+        FILL()  # Fill buffer with white space
+        epd.blit(pool_pbm, 0, 0)
         if type(water) is str:  # Thermocouple Fault
             fault_pbm = load_image('fault_100px.pbm')
             epd.blit(fault_pbm, (EPD_WIDTH - 100) // 2, 150)
