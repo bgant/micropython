@@ -106,6 +106,8 @@ def update_text(text=None, x=0):
 ###################################
 def update(water=None, air=None, power=True, x=0):
     epd.init()
+    epd.TurnOnDisplay()
+    epd.delay_ms(2000)
     if not power:
         print('Power Disconnected...')
         epd.fill(0xff)  # Fill buffer with white space
