@@ -66,8 +66,9 @@ Create Font Subsets to Upload to Micropython Device:
     source .venv/bin/activate
     python3 -m pip list
     python3 -m pip install freetype-py
-    python3 font_to_py.py GothamBlack-25.bdf 25 -x -c 1234567890wateri GothamBlack_25.py
-    python3 font_to_py.py GothamBlack-54.bdf 54 -x -c 1234567890 GothamBlack_54_Numbers.py
+    python3 font_to_py.py GothamBlack.ttf 25 -x -c 1234567890wateri GothamBlack_25.py
+    python3 font_to_py.py GothamBlack.ttf 46 -x -c 1234567890 GothamBlack_46_Numbers.py
+    python3 font_to_py.py GothamBlack.ttf 54 -x -c 1234567890 GothamBlack_54_Numbers.py
 
 Create No Power and Fault Images:
 Source: https://learn.adafruit.com/preparing-graphics-for-e-ink-displays/command-line

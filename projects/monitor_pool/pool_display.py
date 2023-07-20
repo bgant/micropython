@@ -79,9 +79,9 @@ pool_pbm = load_image('pool_graphic.pbm')
 def update_number(temp=None, x=0):
     text = str(temp)
     if len(text) is 3:  # Temps above 99 do not display properly using GothamBlack_54
-        import Arial_50_Numbers
+        import GothamBlack_46_Numbers
         # Source: wget -O Arial_50_Numbers.py https://raw.githubusercontent.com/peterhinch/micropython-nano-gui/master/gui/fonts/arial_50.py
-        font_writer = Writer(epd, Arial_50_Numbers, verbose=False)
+        font_writer = Writer(epd, GothamBlack_46_Numbers, verbose=False)
     else:
         font_writer = Writer(epd, GothamBlack_54_Numbers, verbose=False)
     textlen = font_writer.stringlen(text)
