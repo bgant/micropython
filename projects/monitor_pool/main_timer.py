@@ -165,8 +165,10 @@ def main(timer_main):
     global air_now
     
     # Collect Data:
-    cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
     power_now = bool(vbus())       # Detect 5V Present
+    if not power_now:
+        pool_display.update(power=power_now)
+    cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
     water_now = pool_thermocouple.temp()
     if pool_wifi.wlan.isconnected():
         gc.collect()
@@ -190,7 +192,7 @@ def main(timer_main):
     if (water_temp is water_last) and (air_temp is air_last):
         print('No Temperature Changes... Skipping Display Update...')
     else:
-        pool_display.update(water=water_now, air=air_now, power=power_now)
+        pool_display.update(water=water_now, air=air_now)
     #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
     print('='*45)
     
