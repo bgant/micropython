@@ -153,7 +153,7 @@ water_now  = None
 air_now    = None
 water_last = None
 air_last   = None
-vbus       = Pin(9)  # Detect 5V Present
+vbus       = Pin(9, Pin.IN)  # Detect 5V Present
 
 
 ###################################
