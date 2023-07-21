@@ -124,7 +124,7 @@ from time import sleep, localtime
 print('main.py: Press CTRL+C to enter REPL...')  # Time to enter REPL on power up
 sleep(5)
 from machine import reset, WDT, Timer, lightsleep
-wdt = WDT(timeout=30000)  # Set 13-minute Hardware Watchdog Timer
+wdt = WDT(timeout=120000)  # Set 2-minute Hardware Watchdog Timer
 from esp32 import raw_temperature
 from tinypico import set_dotstar_power, get_battery_voltage
 set_dotstar_power(False)
@@ -153,6 +153,7 @@ water_now  = None
 air_now    = None
 water_last = None
 air_last   = None
+power_last = True
 
 
 ###################################
@@ -160,7 +161,10 @@ air_last   = None
 ###################################
 while True:
     if get_battery_voltage() < 3.7:
-        pool_display.update(power=False)
+        if power_last():
+            pool_display.update(power=False)
+            power_last = False
+        lightsleep(30000)
 
     # Reconnect to Wifi
     if not pool_wifi.wlan.isconnected():
@@ -197,6 +201,7 @@ while True:
     # End of loop cleanup:
     water_last = water_now if not type(water_now) is float else int(roundTraditional(water_now,0))
     air_last = None if air_now is None else int(roundTraditional(air_now,0))
+    power_last = True
     wdt.feed()
     pool_wifi.wlan.active(False)  # Source: https://forum.micropython.org/viewtopic.php?t=10483
     sleep(2)
