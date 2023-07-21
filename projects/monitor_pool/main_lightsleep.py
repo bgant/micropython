@@ -123,10 +123,10 @@ JSON Web Token (jwt)
 from time import sleep, localtime
 print('main.py: Press CTRL+C to enter REPL...')  # Time to enter REPL on power up
 sleep(5)
-from machine import reset, WDT, Timer, Pin, lightsleep
-wdt = WDT(timeout=780000)  # Set 13-minute Hardware Watchdog Timer
+from machine import reset, WDT, Timer, lightsleep
+wdt = WDT(timeout=30000)  # Set 13-minute Hardware Watchdog Timer
 from esp32 import raw_temperature
-from tinypico import set_dotstar_power
+from tinypico import set_dotstar_power, get_battery_voltage
 set_dotstar_power(False)
 
 
@@ -153,13 +153,15 @@ water_now  = None
 air_now    = None
 water_last = None
 air_last   = None
-vbus       = Pin(9, Pin.IN)  # Detect 5V Present
 
 
 ###################################
 # Main Loop Function
 ###################################
 while True:
+    if get_battery_voltage() < 3.7:
+        pool_display.update(power=False)
+
     # Reconnect to Wifi
     if not pool_wifi.wlan.isconnected():
         pool_wifi.wlan.active(True)
@@ -169,9 +171,6 @@ while True:
         print()
 
     # Collect Data:
-    power_now = bool(vbus())       # Detect 5V Present
-    if not power_now:
-        pool_display.update(power=power_now)
     cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
     water_now = pool_thermocouple.temp()
     gc.collect()
