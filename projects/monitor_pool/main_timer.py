@@ -152,22 +152,26 @@ water_now  = None
 air_now    = None
 water_last = None
 air_last   = None
+power_last = True
 
 
 ###################################
 # Main Loop Function
 ###################################
 def main(timer_main):
-    # Display no_power_100px.pbm if running on battery and voltage drops
-    if get_battery_voltage < 3.7:
-        pool_display.update(power=False)
-        
-
     # Set Global Variables
     global water_last
     global air_last
     global water_now
     global air_now
+    global power_last
+    
+    # Display no_power_100px.pbm if running on battery and voltage drops
+    if get_battery_voltage < 3.7:
+        if power_last():
+            pool_display.update(power=False)
+            power_last = False
+        lightsleep(30000)
     
     # Collect Data:
     cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
@@ -201,6 +205,7 @@ def main(timer_main):
     # End of loop cleanup:
     water_last = water_now if not type(water_now) is float else int(roundTraditional(water_now,0))
     air_last = None if air_now is None else int(roundTraditional(air_now,0))
+    power_last = True
     wdt.feed()
 
 

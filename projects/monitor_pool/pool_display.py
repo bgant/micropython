@@ -115,8 +115,6 @@ def update(water=None, air=None, power=True, x=0):
         DISPLAY()
         epd.delay_ms(2000)
         epd.sleep()
-        from sys import exit
-        exit(1)
     else:
         FILL()  # Fill buffer with white space
         epd.blit(pool_pbm, 0, 0)
