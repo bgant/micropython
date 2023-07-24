@@ -125,8 +125,8 @@ def update(water=None, air=None, power=True, x=0):
             update_number(temp=str(int(roundTraditional(water,0))), x=160)
             update_text(text='water', x=220)
         if air:
-            update_number(temp=str(int(roundTraditional(air,0))), x=30)
-            update_text(text='air', x=90)
+            update_number(temp=str(int(roundTraditional(air,0))), x=45)
+            update_text(text='feels like', x=20)
         DISPLAY()
         epd.delay_ms(2000)
         epd.sleep()
