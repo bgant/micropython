@@ -128,8 +128,8 @@ def send_to_influxdb(water=None,cpu=None):
 ###################################
 # Start Wifi/NTP on module import
 ###################################
-wlan_connect(ssid_name,ssid_pass)
-ntp()
+#wlan_connect(ssid_name,ssid_pass)
+#ntp()
 
 
 # pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
