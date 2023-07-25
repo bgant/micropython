@@ -1,7 +1,7 @@
 ''''
 Brandon Gant
 Created: 2023-05-06
-Updated: 2023-05-08
+Updated: 2023-07-25
 
 Parts List:
     * Unexpected Maker TinyS3 (ESP32-S3 Board)
@@ -155,7 +155,7 @@ water_last = None
 air_last   = None
 power_last = True
 vbus = Pin(9, Pin.IN)
-state = 'timer'  # lightsleep or timer
+state = 'lightsleep'  # lightsleep or timer
 
 
 ###################################
@@ -171,13 +171,16 @@ def main(timer_main):
     
     # Display no_power_100px.pbm if running on battery
     if not vbus():
-        if power_last():
+        import TinyPICO_RGB as led
+        led.blink(255,0,0)
+        if power_last:
             pool_wifi.wlan.active(False)
             pool_display.update(power=False)
             sleep(10)
             power_last = False
         wdt.feed()
-        lightsleep(10000)
+        lightsleep(30000)
+        return None
         
     # Reset and Clear Screen occasionally
     if ticks_diff(ticks_ms(), uptime) > 43200000:  # 12 hours
@@ -240,14 +243,6 @@ elif state is 'lightsleep':
 else:
     print(f'Unknown State: {state}')
     
-
-
-# Reset Every 12 hours to Clear Screen:
-def reset_device(timer_reset):
-    print('Resetting Device to Clear Screen...')
-    reset()
-timer_reset = Timer(1)
-timer_reset.init(period=43200000, mode=Timer.PERIODIC, callback=reset_device)
 
 # List of variables: dir()
 # List of modules: help('modules')
