@@ -25,7 +25,6 @@ from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
 ###################################
 epd = EPD_2in13_V3_Portrait()
 #epd = EPD_2in13_B_V4()
-
 if epd.__module__ is 'EPD_2in13_V3':
     epd.Clear()
     def FILL():
@@ -104,29 +103,35 @@ def update_text(text=None, x=0):
 # Main Display Update Function
 ###################################
 def update(water=None, air=None, power=True, x=0):
-    epd.init()
-    epd.TurnOnDisplay()
-    epd.delay_ms(2000)
-    if not power:
-        print('Power Disconnected...')
-        FILL()  # Fill buffer with white space
-        power_pbm = load_image('no_power_100px.pbm')
-        epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
-        DISPLAY()
-        epd.delay_ms(2000)
-        epd.sleep()
-    else:
-        FILL()  # Fill buffer with white space
-        epd.blit(pool_pbm, 0, 0)
-        if type(water) is str:  # Thermocouple Fault
-            fault_pbm = load_image('fault_100px.pbm')
-            epd.blit(fault_pbm, (EPD_WIDTH - 100) // 2, 150)
-        elif water:
-            update_number(temp=str(int(roundTraditional(water,0))), x=160)
-            update_text(text='water', x=220)
-        if air:
-            update_number(temp=str(int(roundTraditional(air,0))), x=45)
-            update_text(text='feels like', x=15)
-        DISPLAY()
-        epd.delay_ms(2000)
-        epd.sleep()
+    try:
+        epd.cs_pin(0)  # Select Shared SPI Peripheral
+        epd.spi.init(phase=0)  # Waveshare uses phase=0 and MAX31856 uses phase=1
+        epd.init()
+        #epd.TurnOnDisplay()
+        #epd.delay_ms(2000)
+        if not power:
+            print('Power Disconnected...')
+            FILL()  # Fill buffer with white space
+            power_pbm = load_image('no_power_100px.pbm')
+            epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
+            DISPLAY()
+            epd.delay_ms(2000)
+            epd.sleep()
+        else:
+            FILL()  # Fill buffer with white space
+            epd.blit(pool_pbm, 0, 0)
+            if type(water) is str:  # Thermocouple Fault
+                fault_pbm = load_image('fault_100px.pbm')
+                epd.blit(fault_pbm, (EPD_WIDTH - 100) // 2, 150)
+            elif water:
+                update_number(temp=str(int(roundTraditional(water,0))), x=160)
+                update_text(text='water', x=220)
+            if air:
+                update_number(temp=str(int(roundTraditional(air,0))), x=45)
+                update_text(text='feels like', x=15)
+            DISPLAY()
+            epd.delay_ms(2000)
+            epd.sleep()
+    finally:
+        epd.spi.deinit()
+        epd.cs_pin(1)  # Deselect Shared SPI Peripheral

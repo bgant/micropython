@@ -120,10 +120,10 @@ JSON Web Token (jwt)
 # Built-in Modules: help('modules')
 ###################################
 from time import sleep, localtime, ticks_ms, ticks_diff
-uptime = ticks_ms()
+from machine import reset, WDT, Timer, Pin, lightsleep
 print('main.py: Press CTRL+C to enter REPL...')  # Time to enter REPL on power up
 sleep(5)
-from machine import reset, WDT, Timer, Pin, lightsleep
+uptime = ticks_ms()
 wdt = WDT(timeout=780000)  # Set 13-minute Hardware Watchdog Timer
 from esp32 import raw_temperature
 from tinypico import set_dotstar_power
