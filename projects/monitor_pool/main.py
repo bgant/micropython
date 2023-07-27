@@ -191,8 +191,6 @@ def main(timer_main):
         pool_wifi.wlan.active(True)
         print('Reconnecting to Wifi...')
         pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
-        print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*localtime()))
-        print()
     
     # Collect Data:
     cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
@@ -226,6 +224,7 @@ def main(timer_main):
     if state is 'lightsleep':
         print('Going to sleep now...')
         pool_wifi.wlan.active(False)  # Source: https://forum.micropython.org/viewtopic.php?t=10483
+        sleep(2)
         lightsleep(600000)
 
 

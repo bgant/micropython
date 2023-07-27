@@ -38,10 +38,10 @@ except:
 # Connect to Wifi
 ###################################
 wlan = network.WLAN(network.STA_IF)
+mac = hexlify(wlan.config('mac'),':').decode()
 def wlan_connect(ssid, password):
     print()
-    print('       MAC: ', hexlify(wlan.config('mac'),':').decode())
-    print(' WiFi SSID: ', ssid)
+    print(f'      WiFi: {ssid_name}')
     while not wlan.isconnected():
         wlan.active(True)
         wlan.connect(ssid, password)
@@ -52,10 +52,13 @@ def wlan_connect(ssid, password):
                 wlan.active(False)
                 utime.sleep(5)
                 break
-    print('        IP: ', wlan.ifconfig()[0])
-    print('    Subnet: ', wlan.ifconfig()[1])
-    print('   Gateway: ', wlan.ifconfig()[2])
-    print('       DNS: ', wlan.ifconfig()[3])
+    print(f'       MAC: {mac}')
+    print(f'        IP: {wlan.ifconfig()[0]}')
+    print(f'    Subnet: {wlan.ifconfig()[1]}')
+    print(f'   Gateway: {wlan.ifconfig()[2]}')
+    print(f'       DNS: {wlan.ifconfig()[3]}')
+    ntp()
+    print()
 
 
 ###################################
@@ -63,7 +66,7 @@ def wlan_connect(ssid, password):
 ###################################
 ntptime.host = key_store.get('ntp_host')
 def ntp():
-    print("NTP Server: ", ntptime.host)
+    print(f'NTP Server: {ntptime.host}')
     attempts = 5  # Number of tries setting Time via NTP
     while attempts:
         try:
@@ -74,8 +77,7 @@ def ntp():
         if utime.time() > 10000:  # Clock is not set with NTP unless unixtime is greater than 10000
             break
         utime.sleep(2)
-    print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
-    print()
+    print('  UTC Time: {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
 
 
 ###################################
