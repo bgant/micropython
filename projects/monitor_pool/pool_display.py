@@ -115,8 +115,6 @@ def update(water=None, air=None, power=True, x=0):
             power_pbm = load_image('no_power_100px.pbm')
             epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
             DISPLAY()
-            epd.delay_ms(2000)
-            epd.sleep()
         else:
             FILL()  # Fill buffer with white space
             epd.blit(pool_pbm, 0, 0)
@@ -130,8 +128,8 @@ def update(water=None, air=None, power=True, x=0):
                 update_number(temp=str(int(roundTraditional(air,0))), x=45)
                 update_text(text='feels like', x=15)
             DISPLAY()
-            epd.delay_ms(2000)
-            epd.sleep()
     finally:
+        epd.delay_ms(2000)
+        epd.sleep()
         epd.spi.deinit()
         epd.cs_pin(1)  # Deselect Shared SPI Peripheral

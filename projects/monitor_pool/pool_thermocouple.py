@@ -16,9 +16,9 @@ from max31856_eliotb import Max31856
 # Max31856 Settings
 ###################################
 tc_type = 'K'  # K-Type Thermocouple
-spi = SPI(1)   # Shared settings with Waveshare Display
-cs = Pin(33, Pin.OUT)  # Assign its own chip select (CS) pin and start it high
-max31856 = Max31856(spi, cs, tc_type)  # 'FAULT: tchigh+open+OV/UV+cjlow+tclow+cjhigh' error if you try to share the SPI bus
+spi = SPI(1)   # Shared SPI with Waveshare Display
+cs = Pin(33, Pin.OUT)  # Assign its own chip select (CS) pin
+max31856 = Max31856(spi, cs, tc_type)
 
 ###################################
 # Read Thermocouple Temperature
