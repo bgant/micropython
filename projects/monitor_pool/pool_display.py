@@ -16,15 +16,15 @@ from writer_peterhinch import Writer
 ###################################
 import GothamBlack_54_Numbers
 import GothamBlack_25
-from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
-#from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
+#from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
+from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
 
 
 ###################################
 # Waveshare Display Differences
 ###################################
-epd = EPD_2in13_V3_Portrait()
-#epd = EPD_2in13_B_V4()
+#epd = EPD_2in13_V3_Portrait()
+epd = EPD_2in13_B_V4()
 if epd.__module__ is 'EPD_2in13_V3':
     epd.Clear()
     def FILL():

@@ -57,8 +57,6 @@ def wlan_connect(ssid, password):
     print(f'    Subnet: {wlan.ifconfig()[1]}')
     print(f'   Gateway: {wlan.ifconfig()[2]}')
     print(f'       DNS: {wlan.ifconfig()[3]}')
-    ntp()
-    print()
 
 
 ###################################
@@ -78,6 +76,7 @@ def ntp():
             break
         utime.sleep(2)
     print('  UTC Time: {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
+    print()
 
 
 ###################################

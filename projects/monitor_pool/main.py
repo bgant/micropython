@@ -191,6 +191,7 @@ def main(timer_main):
         pool_wifi.wlan.active(True)
         print('Reconnecting to Wifi...')
         pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
+        pool_wifi.ntp()
     
     # Collect Data:
     cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
