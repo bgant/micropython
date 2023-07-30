@@ -2,7 +2,7 @@
 # Built-in Modules: help('modules')
 ###################################
 from machine import Pin, SPI
-from time import sleep
+from time import sleep_ms
 
 
 ###################################
@@ -20,34 +20,30 @@ spi = SPI(1)   # Shared SPI with Waveshare Display
 cs = Pin(33, Pin.OUT)  # Assign its own chip select (CS) pin
 max31856 = Max31856(spi, cs, tc_type)
 
+
 ###################################
 # Read Thermocouple Temperature
 ###################################
 def temp():
     try:
         cs(0)  # Select Shared SPI Peripheral
-        spi.init(baudrate=500000,phase=1)  # Waveshare uses phase=0 and MAX31856 uses phase=1
-        fault, fault_string = max31856.faults(read_chip=True)  # read in all data from max31856 chip
-        if fault:
-            print(f'THERMOCOUPLE FAULT: {fault_string}')
-            return fault_string  # Only fix found so far is to cut power completely
-        else:
-            attempts = 13  # Number of tries
-            print(f'Taking {attempts} temperature readings to average...')
-            readings = []
-            while attempts:
-                thermoTempC = max31856.temperature(read_chip=True)
-                print(f'Thermocouple Read: {thermoTempC} C')
-                if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 212 ):  # First reading is sometimes Zero / Sometimes crazy high
-                    readings.append(thermoTempC)
-                attempts -= 1
-                sleep(1)
-            readings.remove(max(readings))
-            readings.remove(min(readings))
-            thermoTempC = sum(readings)/len(readings)
-            thermoTempF = (thermoTempC * 9.0/5.0) + 32
-            print(f'Water Temp:        {thermoTempF} F')
-            return thermoTempF
+        spi.init(phase=1)  # Waveshare uses phase=0 and MAX31856 uses phase=1
+        attempts = 13  # Number of tries
+        print(f'Taking {attempts} temperature readings to average...')
+        readings = []
+        while attempts:
+            thermoTempC = max31856.temperature(read_chip=True)
+            print(f'Thermocouple Read: {thermoTempC} C')
+            if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 100 ):  # First reading is sometimes Zero / Sometimes crazy high
+                readings.append(thermoTempC)
+            attempts -= 1
+            sleep_ms(400)
+        readings.remove(max(readings))
+        readings.remove(min(readings))
+        thermoTempC = sum(readings)/len(readings)
+        thermoTempF = (thermoTempC * 9.0/5.0) + 32
+        print(f'Water Temp:        {thermoTempF} F')
+        return thermoTempF
     finally:
         spi.deinit()
         cs(1)  # Deselect Shared SPI Peripheral

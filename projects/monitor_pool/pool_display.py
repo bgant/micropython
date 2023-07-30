@@ -105,7 +105,7 @@ def update_text(text=None, x=0):
 def update(water=None, air=None, power=True, x=0):
     try:
         epd.cs_pin(0)  # Select Shared SPI Peripheral
-        epd.spi.init(phase=0)  # Waveshare uses phase=0 and MAX31856 uses phase=1
+        epd.spi.init(baudrate=500000,phase=0)  # Waveshare uses phase=0 and MAX31856 uses phase=1
         epd.init()
         #epd.TurnOnDisplay()
         #epd.delay_ms(2000)
