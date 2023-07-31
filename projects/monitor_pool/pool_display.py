@@ -16,23 +16,26 @@ from writer_peterhinch import Writer
 ###################################
 import GothamBlack_54_Numbers
 import GothamBlack_25
-from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
-#from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
+import key_store
 
 
 ###################################
 # Waveshare Display Differences
 ###################################
-epd = EPD_2in13_V3_Portrait()
-#epd = EPD_2in13_B_V4()
-if epd.__module__ is 'EPD_2in13_V3':
+display_type = key_store.get('display_type')
+print(f'E-Ink Display is {display_type}')
+if display_type == 'EPD_2in13_V3':  # Waveshare 2.13" Black/White E-Ink (V3 Silver Sticker)
+    from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
+    epd = EPD_2in13_V3_Portrait()
     epd.Clear()
     def FILL():
         epd.fill(0xff)  # Fill buffer with white space
     def DISPLAY():
         print('Updating Display...')
         epd.display(epd.buffer)
-elif epd.__module__ is 'EPD_2in13_B_V4':
+elif display_type == 'EPD_2in13_B_V4':  # Waveshare 2.13" Black/White/Red E-Ink (V4 Silver Sticker)
+    from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
+    epd = EPD_2in13_B_V4()
     epd.Clear(0xff,0xff)
     def FILL():
         epd.imageblack.fill(0xff)
@@ -41,7 +44,7 @@ elif epd.__module__ is 'EPD_2in13_B_V4':
         print('Updating Display...')
         epd.display()
 else:
-    print('Display Not Defined... Exiting')
+    print('''key_store.get('display_type') not found... Exiting''')
     from sys import exit
     exit(1)
 
