@@ -89,6 +89,7 @@ Secrets Storage on Device using key_store.py:
     key_store.set('database','')
     key_store.set('measurement','')
     key_store.set('jwt','<from https://jwt.io/#debugger-io>')
+    key_store.set('display_type','')
 
 JSON Web Token (jwt)
     If you enabled authentication in InfluxDB you need

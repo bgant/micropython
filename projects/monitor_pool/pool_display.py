@@ -7,8 +7,10 @@ import framebuf
 ###################################
 # 3rd-Party Modules on Github
 ###################################
-from writer_peterhinch import Writer
-# Source: wget -O writer_peterhinch.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
+# wget -O peterhinch-font-to-py.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/font_to_py.py
+# wget -O peterhinch_writer.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
+from peterhinch_writer import Writer
+
 
 
 ###################################
@@ -25,7 +27,8 @@ import key_store
 display_type = key_store.get('display_type')
 print(f'E-Ink Display is {display_type}')
 if display_type == 'EPD_2in13_V3':  # Waveshare 2.13" Black/White E-Ink (V3 Silver Sticker)
-    from EPD_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
+    # wget -O waveshare_2in13_V3.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13_V3.py
+    from waveshare_2in13_V3 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_V3_Portrait
     epd = EPD_2in13_V3_Portrait()
     epd.Clear()
     def FILL():
@@ -34,7 +37,8 @@ if display_type == 'EPD_2in13_V3':  # Waveshare 2.13" Black/White E-Ink (V3 Silv
         print('Updating Display...')
         epd.display(epd.buffer)
 elif display_type == 'EPD_2in13_B_V4':  # Waveshare 2.13" Black/White/Red E-Ink (V4 Silver Sticker)
-    from EPD_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
+    # wget -O waveshare_2in13_B_V4.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13-B_V4.py
+    from waveshare_2in13_B_V4 import EPD_WIDTH, EPD_HEIGHT, EPD_2in13_B_V4
     epd = EPD_2in13_B_V4()
     epd.Clear(0xff,0xff)
     def FILL():
@@ -72,7 +76,7 @@ def load_image(filename):  # inverted pbm files
 ###################################
 # Load Background Pool Image
 ###################################
-pool_pbm = load_image('pool_graphic.pbm')
+pool_pbm = load_image('graphic_pool_122px.pbm')
 
 
 ###################################
@@ -81,8 +85,8 @@ pool_pbm = load_image('pool_graphic.pbm')
 def update_number(temp=None, x=0):
     text = str(temp)
     if len(text) is 3:  # Temps above 99 do not display properly using GothamBlack_54
+        # wget -O GothamBlack_46_Number.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/GothamBlack_46_Numbers.py
         import GothamBlack_46_Numbers
-        # Source: wget -O Arial_50_Numbers.py https://raw.githubusercontent.com/peterhinch/micropython-nano-gui/master/gui/fonts/arial_50.py
         font_writer = Writer(epd, GothamBlack_46_Numbers, verbose=False)
     else:
         font_writer = Writer(epd, GothamBlack_54_Numbers, verbose=False)
@@ -115,14 +119,14 @@ def update(water=None, air=None, power=True, x=0):
         if not power:
             print('Power Disconnected...')
             FILL()  # Fill buffer with white space
-            power_pbm = load_image('no_power_100px.pbm')
+            power_pbm = load_image('graphic_no_power_100px.pbm')
             epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
             DISPLAY()
         else:
             FILL()  # Fill buffer with white space
             epd.blit(pool_pbm, 0, 0)
             if type(water) is str:  # Thermocouple Fault
-                fault_pbm = load_image('fault_100px.pbm')
+                fault_pbm = load_image('graphic_fault_100px.pbm')
                 epd.blit(fault_pbm, (EPD_WIDTH - 100) // 2, 150)
             elif water:
                 update_number(temp=str(int(roundTraditional(water,0))), x=160)

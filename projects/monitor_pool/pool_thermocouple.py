@@ -8,8 +8,8 @@ from time import sleep_ms
 ###################################
 # 3rd-Party Modules on Github
 ###################################
-from max31856_eliotb import Max31856
-# Source: wget -O max31856_eliotb.py https://raw.githubusercontent.com/eliotb/micropython-max31856/master/max31856.py
+# wget -O eliotb_max31856.py https://raw.githubusercontent.com/eliotb/micropython-max31856/master/max31856.py
+from eliotb_max31856 import Max31856
 
 
 ###################################
