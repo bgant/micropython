@@ -12,12 +12,14 @@ from ubinascii import hexlify
 ###################################
 # My Custom Modules on Github
 ###################################
+# wget -O client_id.py https://raw.githubusercontent.com/bgant/micropython/main/modules/client_id.py
 from client_id import client_id
 
 
 ###################################
 # Load secrets from key_store.db
 ###################################
+# wget -O key_store.py https://raw.githubusercontent.com/bgant/micropython/main/modules/key_store.py
 try:
     import key_store
 except:
@@ -124,14 +126,6 @@ def send_to_influxdb(water=None,cpu=None):
         print(f'InfluxDB: {database} \t Measurement: {data} \t Status: {response.status_code} Success')
     else:
         print(f'InfluxDB: {database} \t Measurement: {data} \t Status: {response.status_code} Failed')
-
-
-###################################
-# Start Wifi/NTP on module import
-###################################
-#wlan_connect(ssid_name,ssid_pass)
-#ntp()
-
 
 # pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
 # pool_wifi.ntp()

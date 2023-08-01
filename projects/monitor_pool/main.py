@@ -1,7 +1,7 @@
 ''''
 Brandon Gant
 Created: 2023-05-06
-Updated: 2023-07-25
+Updated: 2023-08-01
 
 Parts List:
     * Unexpected Maker TinyS3 (ESP32-S3 Board)
@@ -9,7 +9,6 @@ Parts List:
 
     * Waveshare 2.13in E-Ink Display HAT
       https://www.amazon.com/dp/B07P9T64BK (Pico_ePaper-2.13_V3.py   Black/White)
-      https://www.amazon.com/dp/B07Q22WDB9 (Pico_ePaper-2.13-B_V4.py Black/White/Red)
 
     * Adafruit Universal Thermocouple Amplifier MAX31856 Breakout
       https://www.adafruit.com/product/3263
@@ -33,21 +32,31 @@ TinyS3 to Waveshare Pinout:
     IO21     <-->  RST
     IO22     <-->  DC
   
-Download Files to Upload to Micropython Device:
-    wget -O EPD_2in13_V3.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13-V3.py
-    wget -O EPD_2in13_B_V4.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13-B_V4.py
-    wget -O writer_peterhinch.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
-    wget -O Arial_50_Numbers.py https://raw.githubusercontent.com/peterhinch/micropython-nano-gui/master/gui/fonts/arial_50.py
-    wget -O max31856_eliotb.py https://raw.githubusercontent.com/eliotb/micropython-max31856/master/max31856.py
+Files to Upload to Micropython Device:
+    wget -O waveshare_2in13_V3.py https://raw.githubusercontent.com/waveshareteam/Pico_ePaper_Code/main/python/Pico_ePaper-2.13-V3.py
+    wget -O peterhinch_writer.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
+    wget -O eliotb_max31856.py https://raw.githubusercontent.com/eliotb/micropython-max31856/master/max31856.py
+    wget -O client_id.py https://raw.githubusercontent.com/bgant/micropython/main/modules/client_id.py
+    wget -O key_store.py https://raw.githubusercontent.com/bgant/micropython/main/modules/key_store.py
+    wget -O TinyPICO_RGB.py https://raw.githubusercontent.com/bgant/micropython/main/modules/TinyPICO_RGB.py
+    wget -O GothamBlack_25.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/GothamBlack_25.py
+    wget -O GothamBlack_46_Numbers.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/GothamBlack_46_Numbers.py
+    wget -O GothamBlack_54_Numbers.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/GothamBlack_54_Numbers.py
+    wget -O graphic_pool_122px.pbm https://github.com/bgant/micropython/raw/main/projects/monitor_pool/graphic_pool_122px.pbm
+    wget -O graphic_no_power_100px.pbm https://github.com/bgant/micropython/raw/main/projects/monitor_pool/graphic_no_power_100px.pbm
+    wget -O pool_thermocouple.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/pool_thermocouple.py
+    wget -O pool_display.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/pool_display.py
+    wget -O pool_wifi.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/pool_wifi.py
+    wget -O main.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/main.py
 
-Edit EPD_2in13_B_V4.py Module to work with SPI:
+Edit waveshare_2in13_V3.py Module to work with SPI:
     RST_PIN         = 21
     DC_PIN          = 22
     CS_PIN          = 5
     BUSY_PIN        = 32
 
-Edit EPD_2in13_B_V4.py Module to work with SPI and Writer.py:
-Source: https://www.instructables.com/Waveshare-E-paper-Display-With-Raspberry-Pi-Pico-M/
+Edit waveshare_2in13_B_V4.py Module to work with SPI and Writer.py:
+  Source: https://www.instructables.com/Waveshare-E-paper-Display-With-Raspberry-Pi-Pico-M/
     RST_PIN         = 21
     DC_PIN          = 22
     CS_PIN          = 5

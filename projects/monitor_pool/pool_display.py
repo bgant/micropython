@@ -7,17 +7,18 @@ import framebuf
 ###################################
 # 3rd-Party Modules on Github
 ###################################
-# wget -O peterhinch-font-to-py.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/font_to_py.py
 # wget -O peterhinch_writer.py https://raw.githubusercontent.com/peterhinch/micropython-font-to-py/master/writer/writer.py
 from peterhinch_writer import Writer
-
 
 
 ###################################
 # My Custom Modules on Github
 ###################################
+# wget -O GothamBlack_54_Number.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/GothamBlack_54_Numbers.py
 import GothamBlack_54_Numbers
+# wget -O GothamBlack_25.py https://raw.githubusercontent.com/bgant/micropython/main/projects/monitor_pool/GothamBlack_25.py
 import GothamBlack_25
+# wget -O key_store.py https://raw.githubusercontent.com/bgant/micropython/main/modules/key_store.py
 import key_store
 
 
