@@ -28,7 +28,7 @@ def temp():
     try:
         cs(0)  # Select Shared SPI Peripheral
         spi.init(phase=1)  # Waveshare uses phase=0 and MAX31856 uses phase=1
-        attempts = 13  # Number of tries
+        attempts = 12  # Number of tries
         print(f'Taking {attempts} temperature readings to average...')
         readings = []
         while attempts:
@@ -37,7 +37,7 @@ def temp():
             if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 100 ):  # First reading is sometimes Zero / Sometimes crazy high
                 readings.append(thermoTempC)
             attempts -= 1
-            sleep_ms(400)
+            sleep_ms(1000)
         readings.remove(max(readings))
         readings.remove(min(readings))
         thermoTempC = sum(readings)/len(readings)
