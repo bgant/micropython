@@ -75,12 +75,6 @@ def load_image(filename):  # inverted pbm files
 
 
 ###################################
-# Load Background Pool Image
-###################################
-pool_pbm = load_image('graphic_pool_122px.pbm')
-
-
-###################################
 # Update Display Numbers
 ###################################
 def update_number(temp=None, x=0):
@@ -120,19 +114,21 @@ def update(water=None, air=None, power=True, x=0):
         if not power:
             print('Power Disconnected...')
             FILL()  # Fill buffer with white space
-            power_pbm = load_image('graphic_no_power_100px.pbm')
-            epd.blit(power_pbm, (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
+            epd.blit(load_image('graphic_no_power_100px.pbm'), (EPD_WIDTH - 100) // 2, (EPD_HEIGHT - 100) // 2)
             DISPLAY()
         else:
             FILL()  # Fill buffer with white space
-            epd.blit(pool_pbm, 0, 0)
-            if type(water) is str:  # Thermocouple Fault
-                fault_pbm = load_image('graphic_fault_100px.pbm')
-                epd.blit(fault_pbm, (EPD_WIDTH - 100) // 2, 150)
+            epd.blit(load_image('graphic_pool_122px.pbm'), 0, 0)
+            # Display Water information:
+            if not water or type(water) is str:  # None or Thermocouple Fault String
+                epd.blit(load_image('graphic_fault_100px.pbm'), (EPD_WIDTH - 100) // 2, 150)
             elif water:
                 update_number(temp=str(int(roundTraditional(water,0))), x=160)
                 update_text(text='water', x=220)
-            if air:
+            #Display Air information:
+            if air is 'no wifi':
+                epd.blit(load_image('graphic_no_wifi_100px.pbm'), (EPD_WIDTH - 100) // 2, 15)
+            elif air:
                 update_number(temp=str(int(roundTraditional(air,0))), x=45)
                 update_text(text='feels like', x=15)
             DISPLAY()

@@ -33,17 +33,22 @@ def temp():
         readings = []
         while attempts:
             thermoTempC = max31856.temperature(read_chip=True)
-            print(f'Thermocouple Read: {thermoTempC} C')
-            if ( int(thermoTempC) is not 0 ) and ( int(thermoTempC) < 100 ):  # First reading is sometimes Zero / Sometimes crazy high
+            if ( thermoTempC is not 0.0 ) and ( thermoTempC < 100 ):  # First reading is sometimes Zero / Sometimes crazy high
+                print(f'Thermocouple Read: {thermoTempC} C')
                 readings.append(thermoTempC)
+            else:
+                print(f'Thermocouple Read: {thermoTempC} C ... ignoring reading')
             attempts -= 1
-            sleep_ms(1000)
-        readings.remove(max(readings))
-        readings.remove(min(readings))
-        thermoTempC = sum(readings)/len(readings)
-        thermoTempF = (thermoTempC * 9.0/5.0) + 32
-        print(f'Water Temp:        {thermoTempF} F')
-        return thermoTempF
+            sleep_ms(2000)
+        if len(readings) > 2:
+            readings.remove(max(readings))
+            readings.remove(min(readings))
+            thermoTempC = sum(readings)/len(readings)
+            thermoTempF = (thermoTempC * 9.0/5.0) + 32
+            print(f'Water Temp:        {thermoTempF} F')
+            return thermoTempF
+        else:
+            return None
     finally:
         spi.deinit()
         cs(1)  # Deselect Shared SPI Peripheral

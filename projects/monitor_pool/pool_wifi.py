@@ -44,21 +44,21 @@ mac = hexlify(wlan.config('mac'),':').decode()
 def wlan_connect(ssid, password):
     print()
     print(f'      WiFi: {ssid_name}')
+    wlan.active(True)
+    wlan.connect(ssid, password)
+    start_wifi = utime.ticks_ms()
     while not wlan.isconnected():
-        wlan.active(True)
-        wlan.connect(ssid, password)
-        start_wifi = utime.ticks_ms()
-        while not wlan.isconnected():
-            if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second connection timeout
-                print('Wifi Timeout... Trying Again')
-                wlan.active(False)
-                utime.sleep(5)
-                break
-    print(f'       MAC: {mac}')
-    print(f'        IP: {wlan.ifconfig()[0]}')
-    print(f'    Subnet: {wlan.ifconfig()[1]}')
-    print(f'   Gateway: {wlan.ifconfig()[2]}')
-    print(f'       DNS: {wlan.ifconfig()[3]}')
+        if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second connection timeout
+            print('Wifi Timeout...')
+            wlan.active(False)
+            utime.sleep(5)
+            break
+    else:
+        print(f'       MAC: {mac}')
+        print(f'        IP: {wlan.ifconfig()[0]}')
+        print(f'    Subnet: {wlan.ifconfig()[1]}')
+        print(f'   Gateway: {wlan.ifconfig()[2]}')
+        print(f'       DNS: {wlan.ifconfig()[3]}')
 
 
 ###################################

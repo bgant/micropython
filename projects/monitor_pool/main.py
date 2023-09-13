@@ -197,28 +197,38 @@ def main(timer_main):
         reset()
     
     # Reconnect to Wifi
-    if not pool_wifi.wlan.isconnected():
-        pool_wifi.wlan.active(True)
-        print('Reconnecting to Wifi...')
-        pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
+    wifi_reconnects = 0
+    while wifi_reconnects <= 5:
+        if not pool_wifi.wlan.isconnected():
+            pool_wifi.wlan.active(True)
+            print('Reconnecting to Wifi...')
+            pool_wifi.wlan_connect(pool_wifi.ssid_name,pool_wifi.ssid_pass)
+        wifi_reconnects += 1
+    if pool_wifi.wlan.isconnected():
         pool_wifi.ntp()
-    
+
     # Collect Data:
     cpu_now   = raw_temperature()  # Reading in Fahrenheit / ESP32 Max Temp 125C/257F
     water_now = pool_thermocouple.temp()
     gc.collect()
-    air_now   = pool_wifi.download_weather()
+    if pool_wifi.wlan.isconnected():
+        air_now = pool_wifi.download_weather()
+    else:
+        air_now = 'no wifi'
     
     # Send Data to InfluxDB Server:
     try:
-        pool_wifi.send_to_influxdb(water=water_now,cpu=cpu_now)
+        if pool_wifi.wlan.isconnected():
+            pool_wifi.send_to_influxdb(water=water_now,cpu=cpu_now)
+        else:
+            print('No Wifi to send InfluxDB data...')
     except Exception as e:
         print(f'ERROR: Failed to connect to InfluxDB server: {e}')
         pass
     
     # Update Display:
     water_temp = int(roundTraditional(water_now,0)) if type(water_now) is float else water_now  # str or None
-    air_temp   = int(roundTraditional(air_now,0))   if type(air_now)   is float else air_now    # None
+    air_temp   = int(roundTraditional(air_now,0))   if type(air_now)   is float else air_now    # str or None
     if (water_temp is water_last) and (air_temp is air_last):
         print('No Temperature Changes... Skipping Display Update...')
     else:
@@ -228,7 +238,7 @@ def main(timer_main):
     
     # End of loop cleanup:
     water_last = water_now if not type(water_now) is float else int(roundTraditional(water_now,0))
-    air_last = None if air_now is None else int(roundTraditional(air_now,0))
+    air_last = air_now if not type(air_now) is float else int(roundTraditional(air_now,0))
     power_last = True
     wdt.feed()
     sleep(3)
