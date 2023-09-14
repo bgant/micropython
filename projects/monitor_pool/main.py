@@ -133,8 +133,10 @@ from time import sleep, localtime, ticks_ms, ticks_diff
 from machine import reset, WDT, Timer, Pin, lightsleep
 print('main.py: Press CTRL+C to enter REPL...')  # Time to enter REPL on power up
 sleep(5)
+
 uptime = ticks_ms()
-wdt = WDT(timeout=780000)  # Set 13-minute Hardware Watchdog Timer
+main_interval = 450000     # 7.5 Minute temperature readings
+wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
 from esp32 import raw_temperature
 from tinypico import set_dotstar_power
 set_dotstar_power(False)
@@ -165,7 +167,7 @@ water_last = None
 air_last   = None
 power_last = True
 vbus = Pin(9, Pin.IN)
-state = 'lightsleep'  # lightsleep or timer
+state = 'lightsleep'  # lightsleep or timer (for debugging)
 
 
 ###################################
@@ -238,7 +240,7 @@ def main(timer_main):
     
     # End of loop cleanup:
     water_last = water_now if not type(water_now) is float else int(roundTraditional(water_now,0))
-    air_last = air_now if not type(air_now) is float else int(roundTraditional(air_now,0))
+    air_last   =   air_now if not type(air_now)   is float else int(roundTraditional(air_now,0))
     power_last = True
     wdt.feed()
     sleep(3)
@@ -246,7 +248,7 @@ def main(timer_main):
         print('Going to sleep now...')
         pool_wifi.wlan.active(False)  # Source: https://forum.micropython.org/viewtopic.php?t=10483
         sleep(2)
-        lightsleep(600000)
+        lightsleep(main_interval)
 
 
 ###################################
@@ -255,7 +257,7 @@ def main(timer_main):
 if state is 'timer':
     timer_main = Timer(0)
     main(timer_main) # Initial Run on Boot
-    timer_main.init(period=600000, mode=Timer.PERIODIC, callback=main)
+    timer_main.init(period=main_interval, mode=Timer.PERIODIC, callback=main)
     # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 elif state is 'lightsleep':
     while True:
