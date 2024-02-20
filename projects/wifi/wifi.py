@@ -1,3 +1,14 @@
+'''
+Module import example:
+  from wifi import WIFI
+  mywifi = WIFI()
+  mywifi.connect()
+  mywifi.ntp()
+  mywifi.isconnected()
+  help(mywifi.wlan)
+  print(mywifi.ip)
+'''
+
 from machine import reset
 from network import WLAN, STA_IF
 from ubinascii import hexlify
