@@ -82,6 +82,7 @@ class WIFI:
             print('   Gateway: ', self.gateway)
             print('       DNS: ', self.dns)
             print()
+            self.ntp()
             return
 
     def ntp(self):
@@ -93,6 +94,8 @@ class WIFI:
             if utime.ticks_diff(utime.ticks_ms(), self.start_ntp) > 10000:  # 10 second timeout
                 print('NTP Timeout... Resetting Device')
                 reset()
+        else:
+            ntptime.settime()
         print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
         print()
         
