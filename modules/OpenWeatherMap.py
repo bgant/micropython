@@ -5,8 +5,8 @@ Module Usage:
     key_store.set('longitude','<value>')
     key_store.set('API_Key_OpenWeatherMap','<appid>')
 
-    from OpenWeatherMap import API
-    api = API()
+    from OpenWeatherMap import WEATHER
+    api = WEATHER()
     response = api.download()
     response = api.download('temp')
 '''
@@ -14,7 +14,7 @@ Module Usage:
 import urequests
 import key_store
 
-class API:
+class WEATHER:
     def __init__(self):
         try:
             self.JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + \

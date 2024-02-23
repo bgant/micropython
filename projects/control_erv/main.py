@@ -4,7 +4,8 @@ from utime import localtime
 
 from wifi import WIFI
 from vttouchw import VTTOUCHW
-from openweathermap import API
+from OpenWeatherMap import WEATHER
+from AirNowAPI import AQI
 from timezone import tz
 
 main_interval = 300000   # Minutes between checks
@@ -28,22 +29,21 @@ class CHECK:
             print('OFF: Nighttime')
             return True
         else:
-            print('ON:  Daytime')
+            print('OK:  Daytime')
             return False
 
     def outside_too_hot_or_cold(self):
         '''
         Is it too hot or cold outside right now?
         '''
-        self.temp = API()
-        self.response = self.temp.download('temp')
-        print(f'Current Temp: {self.response} F')
+        self.weather = WEATHER()
+        self.response = self.weather.download('temp')
         if self.response:
             if (self.response < 32) or (self.response > 90):
-                print('OFF: Too hot or cold')
+                print(f'OFF: Too hot or cold at {self.response}F')
                 return True
             else:
-                print('ON:  Outside temperature is good')
+                print(f'OK:  Outside temperature is good at {self.response}F')
                 return False
         else:
             print(f'ERROR: API Response is {self.response}')
@@ -53,14 +53,19 @@ class CHECK:
         '''
         Is the EPA Air Quality Index too high right now?
         '''
-        print('ON:  No EPA AQI data yet')
-        return False
+        self.PM = AQI('PM')
+        if self.PM > 125:
+            print(f'OFF: EPA Air Quality is too high at {PM}')
+            return True
+        else:
+            print(f'OK:  EPA Air Quality is good at {PM}')
+            return False
 
     def local_aqi_bad(self):
         '''
         Is the outside Air Quality device to high right now? (neighbors burning leaves?)
         '''
-        print('ON:  No Local AQI date yet')
+        print('OK:  Local AQI device not installed yet')
         return False
     
     def everything(self):
@@ -70,7 +75,7 @@ class CHECK:
         if self.night():
             self.standby()
         elif not self.outside_too_hot_or_cold() and not self.epa_aqi_bad() and not self.local_aqi_bad():
-            print('ON:  Daytime checks Passed')
+            print('OK:  Daytime checks Passed')
             self.smart()
         else:
             print('OFF: Daytime checks Failed')
