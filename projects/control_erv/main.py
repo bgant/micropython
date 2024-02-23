@@ -1,11 +1,6 @@
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
-from utime import localtime
-
-# Load key_store/secrets
-from key_store import KEY_STORE
-secrets = KEY_STORE()
 
 # Connect to Wifi and set Clock
 from wifi import WIFI
@@ -24,6 +19,8 @@ main_interval = 300000   # Minutes between Timer loops
 class PROJECT:
     def __init__(self):
         self.erv = VTTOUCHW()
+        self.weather = WEATHER()
+        self.PM = AQI('PM')
 
     def night(self):
         '''
@@ -41,7 +38,6 @@ class PROJECT:
         '''
         Is it too hot or cold outside right now?
         '''
-        self.weather = WEATHER()
         self.response = self.weather.download('temp')
         if self.response:
             if (self.response < 32) or (self.response > 90):
@@ -58,12 +54,14 @@ class PROJECT:
         '''
         Is the EPA Air Quality Index too high right now?
         '''
-        self.PM = AQI('PM')
+        if 20 < localtime(tz())[4] < 30:
+            # Data updates about 10 to 30 minutes after each hour
+            self.PM = AQI('PM')
         if self.PM > 125:
-            print(f'OFF: EPA Air Quality is too high at {PM}')
+            print(f'OFF: EPA Air Quality is too high at {self.PM}')
             return True
         else:
-            print(f'OK:  EPA Air Quality is good at {PM}')
+            print(f'OK:  EPA Air Quality is good at {self.PM}')
             return False
 
     def local_aqi_bad(self):

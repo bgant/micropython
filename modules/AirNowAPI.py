@@ -3,13 +3,8 @@ Source: https://docs.airnowapi.org/webservices --> Current Observations by Repor
 Rate Limited to 500 requests per one-hour period
 
 Usage:
-  import key_store
-  key_store.set('zipCode','<5-digits>')
-  key_store.set('API_Key_AirNow','<key>')
-
   from AirNowAPI import AQI
   json_data = AQI()
-  Ozone = AQI('Ozone')
   PM = AQI('PM')
 
    0 -  50  Good (Green)
@@ -22,18 +17,36 @@ Usage:
 "air quality observations for the previous hour are generally available between 10 and 30 minutes past the hour"
 '''
 
+try:
+    f = open('key_store.py','r')
+    f.close()
+    f = open('wifi.py','r')
+    f.close()
+    from key_store import KEY_STORE
+    key_store = KEY_STORE()
+except OSError:
+    print('key_store.py and wifi.py are required to use this module')    
+    exit()
+
+# Load secrets from local key_store.db
+if key_store.get('zipCode') and key_store.get('API_Key_AirNow'):
+    zipCode = key_store.get('zipCode')
+    API_Key_AirNow = key_store.get('API_Key_AirNow')
+else:  # key_store values are empty
+    zipCode = input('Enter 5-Digit Zip Code - ')
+    API_Key_AirNow = input('Enter AirNow API Key - ')
+    key_store.set('zipCode',zipCode)
+    key_store.set('API_Key_AirNow',API_Key_AirNow)
+
+
 import urequests
-import key_store
-zipCode = key_store.get('zipCode')
-API_KEY = key_store.get('API_Key_AirNow')
-URL = f'https://www.airnowapi.org/aq/observation/zipCode/current/?&format=application/json&zipCode={zipCode}&API_KEY={API_KEY}'
+URL = f'https://www.airnowapi.org/aq/observation/zipCode/current/?&format=application/json&zipCode={zipCode}&API_KEY={API_Key_AirNow}'
+#print(URL)
 def AQI(query=None):
     data = urequests.get(URL).json()
     if not query: 
         return data
     elif query.lower() == 'pm':
-        return data[1]['AQI']
-    elif query.lower() == 'ozone':
         return data[0]['AQI']
     else:
         print(f'ERROR: {query} is not a valid query parameter')

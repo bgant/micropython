@@ -1,19 +1,37 @@
 '''
 Module Usage:
-    import key_store
-    key_store.set('latitude','<value>')
-    key_store.set('longitude','<value>')
-    key_store.set('API_Key_OpenWeatherMap','<appid>')
-
     from OpenWeatherMap import WEATHER
     api = WEATHER()
     response = api.download()
     response = api.download('temp')
 '''
 
-import urequests
-import key_store
+try:
+    f = open('key_store.py','r')
+    f.close()
+    f = open('wifi.py','r')
+    f.close()
+    from key_store import KEY_STORE
+    key_store = KEY_STORE()
+except OSError:
+    print('key_store.py and wifi.py are required to use this module')    
+    exit()
 
+# Load secrets from local key_store.db
+if key_store.get('latitude') and key_store.get('longitude') and key_store.get('API_Key_OpenWeatherMap'):
+    latitude = key_store.get('latitude')
+    longitude = key_store.get('longitude')
+    API_Key_OpenWeatherMap = key_store.get('API_Key_OpenWeatherMap')
+else:  # key_store values are empty
+    latitude = input('Enter Latitude - ')
+    longitude = input('Enter Longitude - ')
+    API_Key_OpenWeatherMap = input('Enter OpenWeatherMap API Key - ')
+    key_store.set('latitude',latitude)
+    key_store.set('longitude',longitude)
+    key_store.set('API_Key_OpenWeatherMap',API_Key_OpenWeatherMap)
+
+
+import urequests
 class WEATHER:
     def __init__(self):
         try:

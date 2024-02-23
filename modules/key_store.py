@@ -37,12 +37,15 @@ class KEY_STORE:
             self.f = open(self.file, 'r+b')  # Opens existing key_store.db
         except OSError:
             self.f = open(self.file, 'w+b')  # Creates key_store.db 
+
+            '''
             self.db = btree.open(self.f,pagesize=512)
             self.db[b'ssid_name']    = input('Enter WiFi SSID - ')
             self.db[b'ssid_pass']    = input('Enter WiFi password - ')
             self.db[b'ntp_host']     = 'pool.ntp.org'
             self.db.flush()
             self.db.close()
+            '''
 
     def set(self,key,value):
         '''
