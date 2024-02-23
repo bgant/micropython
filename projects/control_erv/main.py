@@ -1,22 +1,27 @@
+# Initialize Watchdog Timer
 from machine import reset, WDT, Timer
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
 from utime import localtime
 
+# Load key_store/secrets
+from key_store import KEY_STORE
+secrets = KEY_STORE()
+
+# Connect to Wifi and set Clock
 from wifi import WIFI
+wifi = WIFI()
+wifi.connect()
+
+# Import Project Specific Modules
 from vttouchw import VTTOUCHW
 from OpenWeatherMap import WEATHER
 from AirNowAPI import AQI
+from utime import localtime
 from timezone import tz
 
-main_interval = 300000   # Minutes between checks
+main_interval = 300000   # Minutes between Timer loops
 
-try:
-    wifi = WIFI()
-    wifi.connect()
-except:
-    print('ERROR: Wifi connection failed')
-
-class CHECK:
+class PROJECT:
     def __init__(self):
         self.erv = VTTOUCHW()
 
@@ -68,7 +73,7 @@ class CHECK:
         print('OK:  Local AQI device not installed yet')
         return False
     
-    def everything(self):
+    def erv_control(self):
         '''
         Check everything and decide whether to turn ERV On or Off
         '''
@@ -96,14 +101,14 @@ class CHECK:
             self.erv.standby()  # Turn OFF ERV
 
 
-check = CHECK()
+project = PROJECT()
 timer_main = Timer(0)
 
 def timer_function(timer_main):
-    check.everything()
+    project.erv_control()
     wdt.feed()
 
 timer_function(timer_main)  # Initial Run on Boot
-timer_main.init(period=main_interval,callback=timer_function)
+timer_main.init(period=main_interval, callback=timer_function)
 # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 
