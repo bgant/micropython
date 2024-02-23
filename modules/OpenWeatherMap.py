@@ -1,8 +1,14 @@
 '''
 Module Usage:
-    from openweathermap import API
-    temp = API()
-    temp.download('temp')
+    import key_store
+    key_store.set('latitude','<value>')
+    key_store.set('longitude','<value>')
+    key_store.set('API_Key_OpenWeatherMap','<appid>')
+
+    from OpenWeatherMap import API
+    api = API()
+    response = api.download()
+    response = api.download('temp')
 '''
 
 import urequests
@@ -12,10 +18,10 @@ class API:
     def __init__(self):
         try:
             self.JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + \
-                            key_store.get('lat') + '&lon=' + key_store.get('lon') + \
-                            '&units=imperial&appid=' + key_store.get('appid')
+                            key_store.get('latitude') + '&lon=' + key_store.get('longitude') + \
+                            '&units=imperial&appid=' + key_store.get('API_Key_OpenWeatherMap')
         except:
-            print('ERROR: Need to add lat, lon, appid to key_store')
+            print('ERROR: Need to add latitude, longitude, API_Key_OpenWeatherMap to key_store')
             return None
 
     def download(self, query=None):
