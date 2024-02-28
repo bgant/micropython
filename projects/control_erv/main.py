@@ -1,3 +1,14 @@
+'''
+mpremote a0 mip install --target= github:bgant/erv/micropython/vttouchw.py
+mpremote a0 mip install --target= github:bgant/micropython/projects/control_erv/main.py
+mpremote a0 mip install --target= github:bgant/micropython/modules/wifi.py
+mpremote a0 mip install --target= github:bgant/micropython/modules/key_store.py
+mpremote a0 mip install --target= github:bgant/micropython/modules/timezone.py
+mpremote a0 mip install --target= github:bgant/micropython/modules/AirNowAPI.py
+mpremote a0 mip install --target= github:bgant/micropython/modules/OpenWeatherMap.py
+mpremote a0 mip install --target= github:bgant/micropython/modules/PMS7003.py
+'''
+
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
