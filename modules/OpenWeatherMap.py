@@ -48,7 +48,10 @@ class WEATHER:
             if not query:
                 return self.response  # Return all json data
             else:
-                return self.response['main'][query]  # Return just 'temp' or 'feels_like'
+                if not self.response:  # No data from service (avoid IndexError exception)
+                    return None 
+                else:
+                    return self.response['main'][query]  # Return just 'temp' or 'feels_like'
         except:
             print('ERROR: Unable to download OpenWeatherMap.org Data')
             return None

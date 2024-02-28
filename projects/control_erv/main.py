@@ -66,7 +66,7 @@ class PROJECT:
         if 20 < localtime(tz())[4] < 30:
             # Data updates about 10 to 30 minutes after each hour
             self.PM_EPA = AQI('PM')
-        if self.PM_EPA == -1:
+        if not self.PM_EPA:
             print(f'ON:  EPA Air Quality Unknown (no data from API)') 
             return False
         elif self.PM_EPA > self.high_aqi:
