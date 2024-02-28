@@ -11,6 +11,7 @@ wifi.connect()
 from vttouchw import VTTOUCHW
 from OpenWeatherMap import WEATHER
 from AirNowAPI import AQI
+#from pms7003 import PM7003 
 from utime import localtime
 from timezone import tz
 
@@ -20,13 +21,21 @@ class PROJECT:
     def __init__(self):
         self.erv = VTTOUCHW()
         self.weather = WEATHER()
-        self.PM = AQI('PM')
+        self.PM_EPA = AQI('PM')
+        #self.PM_Local = PMS7003()
+
+        # Thresholds
+        self.night_start = 20  # ERV  on after 8PM
+        self.night_end   =  7  # ERV off after 7AM
+        self.too_cold    = 32  # ERV off below 32F
+        self.too_hot     = 90  # ERV off above 90F
+        self.high_aqi    = 100 # ERV off above 100 PM2.5
 
     def night(self):
         '''
         Is it night right now?
         '''
-        self.night_hours = [h % 24 for h in range(20,7+24)]  # 8PM to 7AM
+        self.night_hours = [h % 24 for h in range(self.night_start,self.night_end+24)]  # 8PM to 7AM
         if localtime(tz())[3] in self.night_hours:
             print('OFF: Nighttime')
             return True
@@ -40,7 +49,7 @@ class PROJECT:
         '''
         self.response = self.weather.download('temp')
         if self.response:
-            if (self.response < 32) or (self.response > 90):
+            if (self.response < self.too_cold) or (self.response > self.too_hot):
                 print(f'OFF: Too hot or cold at {self.response}F')
                 return True
             else:
@@ -56,18 +65,28 @@ class PROJECT:
         '''
         if 20 < localtime(tz())[4] < 30:
             # Data updates about 10 to 30 minutes after each hour
-            self.PM = AQI('PM')
-        if self.PM > 125:
-            print(f'OFF: EPA Air Quality is too high at {self.PM}')
+            self.PM_EPA = AQI('PM')
+        if self.PM_EPA == -1:
+            print(f'ON:  EPA Air Quality Unknown (no data from API)') 
+            return False
+        elif self.PM_EPA > self.high_aqi:
+            print(f'OFF: EPA Air Quality is too high at {self.PM_EPA}')
             return True
         else:
-            print(f'OK:  EPA Air Quality is good at {self.PM}')
+            print(f'OK:  EPA Air Quality is good at {self.PM_EPA}')
             return False
 
     def local_aqi_bad(self):
         '''
         Is the outside Air Quality device to high right now? (neighbors burning leaves?)
         '''
+        # self.PM_Local = PMS7003()
+        # if self.PM_Local > self.high_aqi:
+        #     print(f'OFF: Local Air Quality is too high at {self.PM_Local}')
+        #     return True    
+        # else:
+        #     print(f'OK:  Local Air Quality is good at {self.PM_Local}')
+        #     return False
         print('OK:  Local AQI device not installed yet')
         return False
     

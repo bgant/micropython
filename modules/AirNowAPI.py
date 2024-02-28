@@ -47,7 +47,10 @@ def AQI(query=None):
     if not query: 
         return data
     elif query.lower() == 'pm':
-        return data[0]['AQI']
+        if not data:
+            return -1  # Service did not respond with data (downtime or maintenance)
+        else:
+            return data[0]['AQI']
     else:
         print(f'ERROR: {query} is not a valid query parameter')
 
