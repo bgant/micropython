@@ -90,13 +90,13 @@ class PROJECT:
         print('OK:  Local AQI device not installed yet')
         return False
     
-    def erv_control(self):
+    def control(self):
         '''
         Check everything and decide whether to turn ERV On or Off
         '''
         if self.night():
             self.standby()
-        elif not self.outside_too_hot_or_cold() and not self.epa_aqi_bad() and not self.local_aqi_bad():
+        elif not self.local_aqi_bad() and not self.epa_aqi_bad() and not self.outside_too_hot_or_cold():
             print('OK:  Daytime checks Passed')
             self.smart()
         else:
@@ -122,7 +122,7 @@ project = PROJECT()
 timer_main = Timer(0)
 
 def timer_function(timer_main):
-    project.erv_control()
+    project.control()
     wdt.feed()
 
 timer_function(timer_main)  # Initial Run on Boot
