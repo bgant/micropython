@@ -16,7 +16,7 @@
 # For MQTT to work, your WiFi and network must be on a UPS during the power outage.
 #
 
-from sparkfun_esp32_blue_led import blue_led
+from SparkFun_ESP32_Thing_BlueLED import blue_led
 import key_store
 from machine import Pin
 import micropython
