@@ -27,12 +27,12 @@ class DFRobot_A02_Distance:
   distance_min = 0
   range_max = 4500
 
-  def __init__(self):
+  def __init__(self,rx=21):
     '''
       @brief    Sensor initialization.
     '''
     self._ser = UART(1, 9600)
-    self._ser.init(9600,rx=21)
+    self._ser.init(9600,rx=rx)
     if self._ser.any() != True:
       self.last_operate_status = self.STA_ERR_SERIAL
 
