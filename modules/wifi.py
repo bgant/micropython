@@ -70,9 +70,9 @@ class WIFI:
                 self.wlan.connect(self.ssid_name, self.ssid_pass)
             except:
                 pass
-            self.start_wifi = utime.ticks_ms()
+            start_wifi = utime.ticks_ms()
             while not self.wlan.isconnected():
-                if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > 20000:  # 20 second timeout
+                if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second timeout
                     print('Wifi Timeout... Resetting Device')
                     utime.sleep(2)
                     reset()
@@ -91,10 +91,10 @@ class WIFI:
     def ntp(self):
         #ntptime.host = key_store.get('ntp_host')
         print("NTP Server: ", ntptime.host)
-        self.start_ntp = utime.ticks_ms()
+        start_ntp = utime.ticks_ms()
         while utime.time() < 10000:  # Clock is not set with NTP if unixtime is less than 10000
             ntptime.settime()  # If time is not UTC then Thonny is setting device time
-            if utime.ticks_diff(utime.ticks_ms(), self.start_ntp) > 10000:  # 10 second timeout
+            if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 10 second timeout
                 print('NTP Timeout... Resetting Device')
                 reset()
         else:
