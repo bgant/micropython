@@ -30,21 +30,16 @@ else:  # key_store values are empty
     key_store.set('longitude',longitude)
     key_store.set('API_Key_OpenWeatherMap',API_Key_OpenWeatherMap)
 
-
 import urequests
 class WEATHER:
     def __init__(self):
-        try:
-            self.JSON_URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + \
-                            key_store.get('latitude') + '&lon=' + key_store.get('longitude') + \
-                            '&units=imperial&appid=' + key_store.get('API_Key_OpenWeatherMap')
-        except:
-            print('ERROR: Need to add latitude, longitude, API_Key_OpenWeatherMap to key_store')
-            return None
+        self.URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + \
+            key_store.get('latitude') + '&lon=' + key_store.get('longitude') + \
+            '&units=imperial&appid=' + key_store.get('API_Key_OpenWeatherMap')
 
     def download(self, query=None):
         try:
-            self.response = urequests.get(self.JSON_URL).json()
+            self.response = urequests.get(self.URL).json()
             if not query:
                 return self.response  # Return all json data
             else:

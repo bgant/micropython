@@ -4,8 +4,9 @@ Rate Limited to 500 requests per one-hour period
 
 Usage:
   from AirNowAPI import AQI
-  json_data = AQI()
-  PM = AQI('PM')
+  aqi = AQI()
+  json_data = aqi.download()
+  PM = aqi.download('PM')
 
    0 -  50  Good (Green)
   51 - 100  Moderate (Yellow)
@@ -38,19 +39,20 @@ else:  # key_store values are empty
     key_store.set('zipCode',zipCode)
     key_store.set('API_Key_AirNow',API_Key_AirNow)
 
-
 import urequests
-URL = f'https://www.airnowapi.org/aq/observation/zipCode/current/?&format=application/json&zipCode={zipCode}&API_KEY={API_Key_AirNow}'
-#print(URL)
-def AQI(query=None):
-    data = urequests.get(URL).json()
-    if not query: 
-        return data
-    elif query.lower() == 'pm':
-        if not data:
-            return None  # Service did not respond with data (downtime or maintenance)
-        else:
-            return data[0]['AQI']
-    else:
-        print(f'ERROR: {query} is not a valid query parameter')
+class AQI:
+    def __init__(self):
+        self.URL = f'https://www.airnowapi.org/aq/observation/zipCode/current/?&format=application/json&zipCode={zipCode}&API_KEY={API_Key_AirNow}'
+        #print(self.URL)
 
+    def download(self, query=None):
+        self.response = urequests.get(self.URL).json()
+        if not query: 
+            return self.response
+        elif query.lower() == 'pm':
+            if not self.response:
+                return None  # Service did not respond with data (downtime or maintenance)
+            else:
+                return self.response[0]['AQI']
+        else:
+            print(f'ERROR: {query} is not a valid query parameter')
