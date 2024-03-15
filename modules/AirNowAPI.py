@@ -41,11 +41,13 @@ else:  # key_store values are empty
 
 import urequests
 class AQI:
+    '''Air Quality Index API'''
     def __init__(self):
         self.URL = f'https://www.airnowapi.org/aq/observation/zipCode/current/?&format=application/json&zipCode={zipCode}&API_KEY={API_Key_AirNow}'
         #print(self.URL)
 
     def download(self, query=None):
+        '''Download API JSON Data'''
         self.response = urequests.get(self.URL).json()
         if not query: 
             return self.response

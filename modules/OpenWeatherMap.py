@@ -32,12 +32,14 @@ else:  # key_store values are empty
 
 import urequests
 class WEATHER:
+    '''Open Weather Map API'''
     def __init__(self):
         self.URL = 'https://api.openweathermap.org/data/2.5/weather?lat=' + \
             key_store.get('latitude') + '&lon=' + key_store.get('longitude') + \
             '&units=imperial&appid=' + key_store.get('API_Key_OpenWeatherMap')
 
     def download(self, query=None):
+        '''Download Local Weather JSON Data'''
         try:
             self.response = urequests.get(self.URL).json()
             if not query:
