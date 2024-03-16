@@ -1,7 +1,7 @@
 from time import sleep_ms
 from machine import reset, WDT, Timer
 wdt = WDT(timeout=60000)  # Set 1-minute Hardware Watchdog Timer
-main_interval = 1         # Time in seconds between Timer loops
+main_interval = 5         # Time in seconds between Timer loops
 state = 'loop'            # while 'loop' or 'timer'
 
 from key_store import KEY_STORE
@@ -25,7 +25,7 @@ class PROJECT:
             sleep_ms(350) # minimum 300ms between device readings
         values.sort()
         self.distance = int(sum(values[1:4])/len(values[1:4]))
-        print(f'{self.distance}mm')
+        #print(f'{self.distance}mm')
         if self.distance != 0:
             send_to_influxdb(field_name='mm',field_value=self.distance)
         
