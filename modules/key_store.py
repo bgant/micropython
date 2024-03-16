@@ -29,51 +29,39 @@ class KEY_STORE:
         try:
             f = open(self.file, 'r+b')  # Opens existing key_store.db
         except OSError:
-            f = open(self.file, 'w+b')  # Creates key_store.db 
+            f = open(self.file, 'w+b')  # Creates key_store.db on storage
+            f.close()
+            f = open(self.file, 'r+b')
+        self.db = btree.open(f)
 
     def set(self,key,value):
         '''Add new key/value pairs to key_store.db '''
-        f = open(self.file, 'r+b')
-        db = btree.open(f)
-        db[key] = value
-        db.flush()
-        db.close()
+        self.db[key] = value
+        self.db.flush()
 
     def get(self,key):
         '''Retrieve data from key_store.db'''
-        f = open(self.file, 'r+b')
-        db = btree.open(f)
         try:
-            return db[key].decode('utf-8')
+            return self.db[key].decode('utf-8')
         except KeyError:
             return None
-        db.close()
 
     def delete(self,key):
         '''Delete data from key_store.db'''
-        f = open(self.file, 'r+b')
-        db = btree.open(f)
-        del db[key]
-        db.flush()
-        db.close()
+        del self.db[key]
+        self.db.flush()
 
     def dumptext(self):
         '''Prints contents of key_store.db ''' 
-        f = open(self.file, 'r+b')
-        db = btree.open(f)
-        for key in db:
-            print(key.decode('utf-8'), db[key].decode('utf-8'))
-        db.close()
+        for key in self.db:
+            print(key.decode('utf-8'), self.db[key].decode('utf-8'))
 
     def dumpfile(self):
         '''Dumps key_store.db contects to key_store.txt file'''
-        f = open(self.file, 'r+b')
-        db = btree.open(f)
         with open('key_store.txt', 'wt') as text:
-            for key in db:
-                pair = "{}:{}\n".format(key.decode('utf-8'), db[key].decode('utf-8'))
+            for key in self.db:
+                pair = "{}:{}\n".format(key.decode('utf-8'), self.db[key].decode('utf-8'))
                 text.write(pair)
-        db.close()
         print('key_store.txt created')
 
     def wipe(self):
