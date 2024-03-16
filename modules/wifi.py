@@ -64,6 +64,7 @@ class WIFI:
             self.wlan.active(True)
             
             self.mac = hexlify(self.wlan.config('mac'),':').decode()
+            print('')
             print('       MAC: ', self.mac)
             print(' WiFi SSID: ', self.ssid_name)
             try:
