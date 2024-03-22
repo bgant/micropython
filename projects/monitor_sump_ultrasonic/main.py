@@ -1,7 +1,7 @@
 from time import sleep_ms
 from machine import reset, WDT, Timer
 wdt = WDT(timeout=60000)  # Set 1-minute Hardware Watchdog Timer
-main_interval = 5         # Time in seconds between Timer loops
+main_interval = 2         # Time in seconds between Timer loops
 state = 'loop'            # while 'loop' or 'timer'
 
 from key_store import KEY_STORE
@@ -19,15 +19,10 @@ class PROJECT:
         self.ultrasonic = DFRobot_A02_Distance(rx=37)
 
     def control(self):
-        values = []
-        for i in range(5):
-            values.append(self.ultrasonic.getDistance())
-            sleep_ms(350) # minimum 300ms between device readings
-        values.sort()
-        self.distance = int(sum(values[1:4])/len(values[1:4]))
-        #print(f'{self.distance}mm')
-        if self.distance != 0:
-            send_to_influxdb(field_name='mm',field_value=self.distance)
+        distance = self.ultrasonic.getDistance()
+        #print(f'{distance}mm')
+        if distance != 0:
+            send_to_influxdb(field_name='mm',field_value=distance)
         
 
 project = PROJECT()
