@@ -1,3 +1,16 @@
+'''
+from webdis import WEBDIS
+webdis = WEBDIS()
+
+webdis.ping()
+
+webdis.get('foo')
+json_data = webdis.response.json()
+
+webdis.get('foo')
+text_data = webdis.response.json()['GET']
+'''
+
 import urequests
 
 try:

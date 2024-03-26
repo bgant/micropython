@@ -11,7 +11,7 @@ from wifi import WIFI
 wifi = WIFI()
 wifi.connect()
 
-from send_to_webdis import WEBDIS
+from webdis import WEBDIS
 webdis = WEBDIS()
 
 class PROJECT:
