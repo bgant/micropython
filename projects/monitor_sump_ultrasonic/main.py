@@ -11,18 +11,29 @@ from wifi import WIFI
 wifi = WIFI()
 wifi.connect()
 
+import urequests
 from DFRobot_MicroPython_A02YYUW import DFRobot_A02_Distance
-from send_to_influxdb import send_to_influxdb
+from webdis import WEBDIS
+webdis = WEBDIS()
 
 class PROJECT:
     def __init__(self):
         self.ultrasonic = DFRobot_A02_Distance(rx=37)
-
+        self.webdis_host = key_store.get('webdis_host')
+        self.webdis_port = key_store.get('webdis_port')
+        if key_store.get('webdis_key'):
+            self.webdis_key = key_store.get('webdis_key')  # Webdis Key Name
+        else:  # key_store value is empty
+            self.webdis_key = input('Enter Webdis Key Name - ')
+            key_store.set('webdis_key',self.webdis_key)
+            
     def control(self):
         distance = self.ultrasonic.getDistance()
         #print(f'{distance}mm')
         if distance != 0:
-            send_to_influxdb(field_name='mm',field_value=distance)
+            URL = f'http://{self.webdis_host}:{self.webdis_port}/TS.ADD/{self.webdis_key}/*/{distance}'
+            response = urequests.get(URL)
+            print(f'Webdis Response: {response.text}')
         
 
 project = PROJECT()
