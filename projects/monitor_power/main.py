@@ -1,6 +1,6 @@
 from time import sleep_ms
 from machine import reset, WDT, Timer, Pin
-wdt = WDT(timeout=120000)  # Set 2-minute Hardware Watchdog Timer
+wdt = WDT(timeout=180000)  # Set 3-minute Hardware Watchdog Timer
 main_interval = 60         # Time in seconds between Timer loops
 state = 'timer'            # while 'loop' or 'timer'
 
