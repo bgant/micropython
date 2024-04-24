@@ -5,13 +5,16 @@ webdis = WEBDIS()
 webdis.ping()
 
 webdis.get('foo')
-json_data = webdis.response.json()
+webdis.response_text
+webdis.response_json  <-- None
 
-webdis.get('foo')
-text_data = webdis.response.json()['GET']
+webdis.get('json-epa-aqi')
+webdis.response_text
+webdis.response_json  <-- JSON 
 '''
 
 import urequests
+import json
 
 try:
     f = open('key_store.py','r')
@@ -57,6 +60,10 @@ class WEBDIS:
         self.send()
 
     def send(self):
-        self.response = urequests.get(self.URL)
-        print(f'Webdis Response: {self.response.text}')
-
+        r = urequests.get(self.URL)
+        webdis_json = r.json()
+        self.response_text = webdis_json['GET']  # Webdis adds a JSON ['GET'] before string response
+        try:
+            self.response_json = json.loads(self.response_text)  # If Webdis string is JSON, convert to JSON format
+        except:
+            self.response_json = None
