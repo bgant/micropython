@@ -45,24 +45,24 @@ class WEBDIS:
 
     def ping(self):
         self.URL = f'http://{self.host}:{self.port}/PING'
-        self.send()
+        self.send(command='PING')
 
     def set(self,key=None,value=None):
         self.URL = f'http://{self.host}:{self.port}/SET/{key}/{value}'
-        self.send()
+        self.send(command='SET')
 
     def get(self,key=None):
         self.URL = f'http://{self.host}:{self.port}/GET/{key}'
-        self.send()
+        self.send(command='GET')
 
     def timeseries(self,key=None,value=None):
         self.URL = f'http://{self.host}:{self.port}/TS.ADD/{key}/*/{value}'
-        self.send()
+        self.send(command='TS.ADD')
 
-    def send(self):
+    def send(self, command=None):
         r = urequests.get(self.URL)
-        webdis_json = r.json()
-        self.response_text = webdis_json['GET']  # Webdis adds a JSON ['GET'] before string response
+        self.webdis_json = r.json()
+        self.response_text = self.webdis_json[command]  # Webdis adds a JSON ['COMMAND'] before string response
         try:
             self.response_json = json.loads(self.response_text)  # If Webdis string is JSON, convert to JSON format
         except:
