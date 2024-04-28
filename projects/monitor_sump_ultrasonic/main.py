@@ -13,8 +13,6 @@ wifi.connect()
 
 import urequests
 from DFRobot_MicroPython_A02YYUW import DFRobot_A02_Distance
-from webdis import WEBDIS
-webdis = WEBDIS()
 
 class PROJECT:
     def __init__(self):
@@ -58,6 +56,3 @@ elif state is 'loop':
         sleep_ms(main_interval*1000)
 else:
     print(f'Unknown State: {state}')
-
-
-
