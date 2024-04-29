@@ -197,8 +197,8 @@ elif 'TinyS3' in implementation[2]:
                     self.update_text(text='feels like', x=15)
                 self.display()
         finally:
+            self.epd.ReadBusy()
             self.epd.delay_ms(2000)
-            #self.epd.sleep()
             self.epd.spi.deinit()
             self.epd.cs_pin(1)  # Deselect Shared SPI Peripheral
 
