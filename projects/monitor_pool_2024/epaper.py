@@ -204,5 +204,5 @@ elif 'TinyS3' in implementation[2]:
 
 '''
 NOTES:
-    - blit function is inherited from the framebuf.FrameBuffer class
+    - epd.blit function is inherited from the framebuf.FrameBuffer class in Pico_ePaper_2in13_B_V4.py
 '''
