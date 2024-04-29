@@ -119,10 +119,11 @@ class EPD_2in13_B_V4_Portrait:
         self.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
-        print('busy')
-        while(self.digital_read(self.busy_pin) == 1): 
-            self.delay_ms(10) 
-        print('busy release')
+        print('busy .', end='')
+        while self.digital_read(self.busy_pin) == 1:
+            print('.', end='')
+            self.delay_ms(1000) 
+        print(' ready')
         self.delay_ms(20)
         
     def TurnOnDisplay(self):
