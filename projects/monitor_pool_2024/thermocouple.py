@@ -3,6 +3,7 @@
 ###################################
 from machine import Pin, SPI
 from time import sleep_ms
+from sys import implementation
 
 
 ###################################
@@ -16,7 +17,12 @@ class THERMOCOUPLE:
         '''Max31856 Settings'''
         tc_type = 'K'  # K-Type Thermocouple
         self.spi = SPI(1)   # Shared SPI with Waveshare Display
-        self.cs = Pin(6, Pin.OUT)  # Assign its own chip select (CS) pin
+        if 'TinyPico' in implementation[2]:
+            self.cs = Pin(33, Pin.OUT)  # Assign device its own chip select (CS) pin
+        elif 'TinyS3' in implementation[2]:
+            self.cs = Pin(6, Pin.OUT)   # Assign device its own chip select (CS) pin
+        else:
+            self.cs = Pin(6, Pin.OUT)   # Assign device its own chip select (CS) pin
         self.max31856 = Max31856(self.spi, self.cs, tc_type)
 
     def read(self):
