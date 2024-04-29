@@ -2,7 +2,7 @@
 from machine import reset, WDT, Timer, lightsleep
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
 main_interval = 450        # Time in seconds between loops
-state = 'loop'             # while 'loop' or 'timer'
+state = 'timer'             # while 'loop' or 'timer'
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
@@ -34,16 +34,17 @@ class PROJECT:
     def check_power(self):
         '''Check if Power is connected to USB'''
         if not self.vbus:
-            if power_last:
+            if self.power_last:
                 self.wifi.disconnect()
-                self.update(power=False)
+                self.epaper.update(power=False)
+                self.epaper.epd.ReadBusy()
                 sleep_ms(2000)
                 self.power_last = False
             wdt.feed()
             lightsleep(30000)
             return None
         else:
-            print('Power is on')
+            print('Power is connected')
 
     def check_reset(self):
         '''Reset and Clear Screen occasionally'''
