@@ -12,5 +12,6 @@
     ["graphic_no_wifi_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_no_wifi_100px.pbm"],
     ["graphic_pool_122px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_pool_122px.pbm"]
   ],
-  "version": "1.0"
+  "deps": [],
+  "version": "0.1"
 }
