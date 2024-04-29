@@ -31,15 +31,6 @@ from machine import Pin, SPI
 import framebuf
 import utime
 
-
-EPD_WIDTH       = 122
-EPD_HEIGHT      = 250
-
-#RST_PIN         = 12
-#DC_PIN          = 8
-#CS_PIN          = 9
-#BUSY_PIN        = 13
-
 from sys import implementation
 if 'TinyPico' in implementation[2]:
     RST_PIN         = 21
@@ -54,15 +45,18 @@ elif 'TinyS3' in implementation[2]:
 
 class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
     def __init__(self):
+        self.EPD_WIDTH       = 122
+        self.EPD_HEIGHT      = 250
+        
         self.reset_pin = Pin(RST_PIN, Pin.OUT)
         
         self.busy_pin = Pin(BUSY_PIN, Pin.IN, Pin.PULL_UP)
         self.cs_pin = Pin(CS_PIN, Pin.OUT)
-        if EPD_WIDTH % 8 == 0:
-            self.width = EPD_WIDTH
+        if self.EPD_WIDTH % 8 == 0:
+            self.width = self.EPD_WIDTH
         else :
-            self.width = (EPD_WIDTH // 8) * 8 + 8
-        self.height = EPD_HEIGHT
+            self.width = (self.EPD_WIDTH // 8) * 8 + 8
+        self.height = self.EPD_HEIGHT
         
         self.spi = SPI(1)
         self.spi.init(baudrate=4000_000)
