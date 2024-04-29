@@ -52,7 +52,7 @@ elif 'TinyS3' in implementation[2]:
     CS_PIN          = 34
     BUSY_PIN        = 7
 
-class EPD_2in13_B_V4_Portrait:
+class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
     def __init__(self):
         self.reset_pin = Pin(RST_PIN, Pin.OUT)
         
@@ -73,6 +73,7 @@ class EPD_2in13_B_V4_Portrait:
         self.buffer_red = bytearray(self.height * self.width // 8)
         self.imageblack = framebuf.FrameBuffer(self.buffer_balck, self.width, self.height, framebuf.MONO_HLSB)
         self.imagered = framebuf.FrameBuffer(self.buffer_red, self.width, self.height, framebuf.MONO_HLSB)
+        super().__init__(self.buffer_balck, self.width, self.height, framebuf.MONO_HLSB)
         self.init()
 
     def digital_write(self, pin, value):
