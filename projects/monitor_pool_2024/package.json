@@ -1,12 +1,10 @@
 {
   "urls": [
     ["graphic_fault_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_fault_100px.pbm"],
-    ["graphic_no_power_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_no_power_100px.pbm"]
+    ["graphic_no_power_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_no_power_100px.pbm"],
+    ["key_store.py", "github:bgant/micropython/modules/key_store.py"]
   ],
   "deps": [
-    ["key_store.py", "github:bgant/micropython/modules/key_store.py"],
-    ["wifi.py", "github:bgant/micropython/modules/wifi.py"],
-    ["writer.py", "github:peterhinch/micropython-font-to-py/writer/writer.py"]
   ],
   "version": "1.0"
 }
