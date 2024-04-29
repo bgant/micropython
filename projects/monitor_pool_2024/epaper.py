@@ -122,10 +122,10 @@ elif 'TinyS3' in implementation[2]:
     
     def display(self):  # Device specific display
         if self.display_type == 'EPD_2in13_V3':
-            print('Updating Display...')
+            print('Updating Display')
             self.epd.display(self.epd.buffer)
         elif self.display_type == 'EPD_2in13_B_V4':
-            print('Updating Display...')
+            print('Updating Display')
             self.epd.display()
 
     def roundTraditional(self,val,digits):
