@@ -1,8 +1,8 @@
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer, lightsleep
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
-main_interval = 450        # Time in seconds between loops
-state = 'timer'             # while 'loop' or 'timer'
+main_interval = 180        # Time in seconds between loops (loop takes 90 seconds)
+state = 'timer'            # while 'loop' or 'timer'
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
@@ -30,6 +30,12 @@ class PROJECT:
         self.air_last = None
         self.power_last = True
         self.vbus = get_vbus_present()
+        
+        if self.key_store.get('webdis_key'):
+            self.webdis_key = self.key_store.get('webdis_key')  # Webdis Water Temperature Data
+        else:  # key_store values are empty
+            self.webdis_key = input('Enter Webdis Key for storing Water Temp - ')
+            self.key_store.set('webdis_key',self.webdis_key)
 
     def check_power(self):
         '''Check if Power is connected to USB'''
@@ -68,6 +74,12 @@ class PROJECT:
         '''Get water temperature reading from Thermocouple'''
         self.thermocouple.read()
         self.water_now = self.thermocouple.tempF
+        self.send_to_webdis()
+    
+    def send_to_webdis(self):
+        '''Send current water temperature to Webdis'''
+        self.webdis.timeseries(self.webdis_key,self.water_now)
+        print(f'{self.water_now} sent to Webdis {self.webdis.webdis_json}')
     
     def air(self):
         '''Get current "Feels Like" Air temperature'''
@@ -87,10 +99,8 @@ class PROJECT:
         
     def cleanup(self):
         '''End of loop cleanup'''
-        self.water_now = self.water_now if not type(self.water_now) is float else int(self.roundTraditional(self.water_now,0))
-        self.air_now   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))
-        self.water_last = self.water_now
-        self.air_last = self.air_now
+        self.water_last = self.water_now if not type(self.water_now) is float else int(self.roundTraditional(self.water_now,0))
+        self.air_last   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))
         self.power_last = True        
         
     def loop(self):
@@ -116,13 +126,13 @@ def timer_function(timer_main):
 ###################################
 print()
 if state is 'timer':
-    print('main.py running in Timer')
+    print(f'main.py running in Timer every {main_interval} seconds')
     timer_main = Timer(0)
     timer_function(timer_main)  # Initial Run on Boot
     timer_main.init(period=main_interval*1000, callback=timer_function)
     # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 elif state is 'loop':
-    print('main.py running in while True loop (Ctrl+C to REPL)')
+    print('main.py running in while True loop every {main_interval} seconds (Ctrl+C to REPL)')
     while True:
         timer_function(None)
         sleep_ms(main_interval*1000)

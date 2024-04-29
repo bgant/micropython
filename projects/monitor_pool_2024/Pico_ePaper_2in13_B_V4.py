@@ -114,7 +114,7 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         self.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
-        print('busy .', end='')
+        print('Display busy .', end='')
         while self.digital_read(self.busy_pin) == 1:
             print('.', end='')
             self.delay_ms(1000) 
@@ -146,7 +146,7 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
     
 
     def init(self):
-        print('init')
+        print('Display init')
         self.reset()
         
         self.ReadBusy()   
@@ -271,7 +271,7 @@ class EPD_2in13_B_V4_Landscape:
         self.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
-        print('busy')
+        print('Display busy')
         while(self.digital_read(self.busy_pin) == 1): 
             self.delay_ms(10) 
         print('busy release')
@@ -302,7 +302,7 @@ class EPD_2in13_B_V4_Landscape:
     
 
     def init(self):
-        print('init')
+        print('Display init')
         self.reset()
         
         self.ReadBusy()   
