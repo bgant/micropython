@@ -35,10 +35,22 @@ import utime
 EPD_WIDTH       = 122
 EPD_HEIGHT      = 250
 
-RST_PIN         = 12
-DC_PIN          = 8
-CS_PIN          = 9
-BUSY_PIN        = 13
+#RST_PIN         = 12
+#DC_PIN          = 8
+#CS_PIN          = 9
+#BUSY_PIN        = 13
+
+from sys import implementation
+if 'TinyPico' in implementation[2]:
+    RST_PIN         = 21
+    DC_PIN          = 22
+    CS_PIN          = 5
+    BUSY_PIN        = 32
+elif 'TinyS3' in implementation[2]:
+    RST_PIN         = 8
+    DC_PIN          = 9
+    CS_PIN          = 34
+    BUSY_PIN        = 7
 
 class EPD_2in13_B_V4_Portrait:
     def __init__(self):
