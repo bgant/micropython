@@ -6,12 +6,13 @@ state = 'timer'            # while 'loop' or 'timer'
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
-from tinys3 import get_vbus_present
 from key_store import KEY_STORE
 from wifi import WIFI
 from webdis import WEBDIS
 from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
+from sys import implementation
+
 
 class PROJECT:
     def __init__(self):
@@ -29,7 +30,13 @@ class PROJECT:
         self.water_last = None
         self.air_last = None
         self.power_last = True
-        self.vbus = get_vbus_present()
+        
+        if 'TinyS3' in implementation[2]:
+            from tinys3 import get_vbus_present
+            self.vbus = get_vbus_present()
+        elif 'TinyPICO' in implementation[2]:
+            from machine import Pin
+            self.vbus = bool(Pin(9, Pin.IN))
         
         if self.key_store.get('webdis_key'):
             self.webdis_key = self.key_store.get('webdis_key')  # Webdis Water Temperature Data
