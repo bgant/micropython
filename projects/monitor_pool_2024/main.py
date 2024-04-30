@@ -35,7 +35,7 @@ class PROJECT:
             from tinys3 import get_vbus_present
             self.vbus = get_vbus_present  # type(vbus) is <class 'function'>
         elif 'TinyPICO' in implementation[2]:
-            from machine import Pin
+            from machine import Pin       # GPIO 9 is "Detect 5V Present"
             self.vbus = Pin(9, Pin.IN)    # type(vbus) is <class 'Pin'>
         
         if self.key_store.get('webdis_key'):
