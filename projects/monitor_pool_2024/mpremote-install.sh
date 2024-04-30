@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# This script copies all the files needed for this project onto a TinyPICO or TinyS3.
+# 
 mpremote a0 mip install --target= github:bgant/micropython/projects/monitor_pool_2024
 mpremote a0 mip install --target= github:bgant/micropython/modules/key_store.py
 mpremote a0 mip install --target= github:bgant/micropython/modules/wifi.py
