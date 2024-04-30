@@ -123,7 +123,18 @@ class PROJECT:
 
 project = PROJECT()
 
+# This seems to be the best way to run loop and access REPL
+import _thread
+def main_loop():
+    while True:
+        project.tasks()
+        sleep_ms(60000)
 
+print('Launching Thread Loop')
+_thread.start_new_thread(main_loop,())
+
+
+'''
 import asyncio
 import aiorepl
 
@@ -139,7 +150,7 @@ async def launch_coroutines():
     await asyncio.gather(task1,repl)
 
 asyncio.run(launch_coroutines())
-
+'''
 
 '''No access to REPL
 import asyncio
