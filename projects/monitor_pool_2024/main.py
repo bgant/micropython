@@ -36,7 +36,7 @@ class PROJECT:
             self.vbus = get_vbus_present()
         elif 'TinyPICO' in implementation[2]:
             from machine import Pin
-            self.vbus = bool(Pin(9, Pin.IN))
+            self.vbus = Pin(9, Pin.IN)
         
         if self.key_store.get('webdis_key'):
             self.webdis_key = self.key_store.get('webdis_key')  # Webdis Water Temperature Data
@@ -46,7 +46,7 @@ class PROJECT:
 
     def check_power(self):
         '''Check if Power is connected to USB'''
-        if not self.vbus:
+        if not self.vbus():
             if self.power_last:
                 self.wifi.disconnect()
                 self.epaper.update(power=False)
