@@ -170,7 +170,8 @@ elif 'TinyS3' in implementation[2]:
         try:
             self.epd.cs_pin(0)  # Select Shared SPI Peripheral
             self.epd.spi.init(phase=0)  # Waveshare uses phase=0 and MAX31856 uses phase=1
-            self.epd.init()
+            self.epd.reset()
+            #self.epd.init()
             #self.epd.TurnOnDisplay()
             #self.epd.delay_ms(2000)
             if not power:
@@ -196,9 +197,9 @@ elif 'TinyS3' in implementation[2]:
                     self.update_text(text='feels like', x=15)
                 self.display()
         finally:
-            print('Display Deep Sleep .', end='')
+            print('Display: Deep Sleep .', end='')
             self.epd.ReadBusy()
-            self.epd.delay_ms(2000)
+            self.epd.delay_ms(1000)
             self.epd.sleep()    # Display enters Deep Sleep Mode 01 / To wake call reset() or init()
             self.epd.spi.deinit()
             self.epd.cs_pin(1)  # Deselect Shared SPI Peripheral
