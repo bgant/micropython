@@ -10,7 +10,9 @@
     ["graphic_fault_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_fault_100px.pbm"],
     ["graphic_no_power_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_no_power_100px.pbm"],
     ["graphic_no_wifi_100px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_no_wifi_100px.pbm"],
-    ["graphic_pool_122px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_pool_122px.pbm"]
+    ["graphic_pool_122px.pbm", "github:bgant/micropython/projects/monitor_pool_2024/graphic_pool_122px.pbm"],
+    ["max31856.py", "github:bgant/micropython/projects/monitor_pool_2024/max31856.py"],
+    ["writer.py", "github:bgant/micropython/projects/monitor_pool_2024/writer.py"]
   ],
   "deps": [],
   "version": "0.1"
