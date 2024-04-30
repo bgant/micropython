@@ -98,11 +98,10 @@ class PROJECT:
         water_text = int(self.roundTraditional(self.water_now,0)) if type(self.water_now) is float else self.water_now  # str or None
         air_text   = int(self.roundTraditional(self.air_now,0))   if type(self.air_now)   is float else self.air_now    # str or None
         if (water_text is self.water_last) and (air_text is self.air_last):
-            print('No Temperature Changes... Skipping Display Update...')
+            print('No Temperature Changes... Skipping Display Update')
         else:
             self.epaper.update(water=self.water_now, air=self.air_now)
         #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
-        print('='*45)
         
     def cleanup(self):
         '''End of loop cleanup'''
@@ -119,14 +118,14 @@ class PROJECT:
         self.air()
         self.update_display()
         self.cleanup()
-
+        
 
 project = PROJECT()
 
 def timer_function(timer_main):
     project.loop()
     wdt.feed()
-
+    
 
 ###################################
 # Run in timer or loop
