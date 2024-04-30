@@ -17,7 +17,7 @@ class THERMOCOUPLE:
         '''Max31856 Settings'''
         tc_type = 'K'  # K-Type Thermocouple
         self.spi = SPI(1)   # Shared SPI with Waveshare Display
-        if 'TinyPico' in implementation[2]:
+        if 'TinyPICO' in implementation[2]:
             self.cs = Pin(33, Pin.OUT)  # Assign device its own chip select (CS) pin
         elif 'TinyS3' in implementation[2]:
             self.cs = Pin(6, Pin.OUT)   # Assign device its own chip select (CS) pin

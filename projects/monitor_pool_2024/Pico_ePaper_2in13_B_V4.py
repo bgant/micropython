@@ -32,7 +32,7 @@ import framebuf
 import utime
 
 from sys import implementation
-if 'TinyPico' in implementation[2]:
+if 'TinyPICO' in implementation[2]:
     RST_PIN         = 21
     DC_PIN          = 22
     CS_PIN          = 5
