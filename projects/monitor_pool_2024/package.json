@@ -15,5 +15,5 @@
     ["writer.py", "github:bgant/micropython/projects/monitor_pool_2024/writer.py"]
   ],
   "deps": [],
-  "version": "0.1"
+  "version": "0.2"
 }
