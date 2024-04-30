@@ -122,7 +122,6 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         self.delay_ms(20)
         
     def TurnOnDisplay(self):
-        print('Display Update .', end='')
         self.send_command(0x20)  # Activate Display Update Sequence
         self.ReadBusy()
 
@@ -147,15 +146,15 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
     
 
     def init(self):
-        print('Display Reset Pin .', end='')
+        print('Display: Hardware Reset .', end='')
         self.reset()
         self.ReadBusy()
         
-        print('Display Software Reset .', end='') 
+        print('Display: Software Reset .', end='') 
         self.send_command(0x12)  #SWRESET
         self.ReadBusy()   
 
-        print('Display Configuration .', end='')
+        print('Display: Configuration .', end='')
         self.send_command(0x01) #Driver output control      
         self.send_data(0xf9)
         self.send_data(0x00)
@@ -188,6 +187,7 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         self.send_command(0x26)
         self.send_data1(self.buffer_red)  
 
+        print('Display: Update .', end='')
         self.TurnOnDisplay()
 
     
@@ -197,7 +197,8 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         
         self.send_command(0x26)
         self.send_data1([colorred] * self.height * int(self.width / 8))
-                                
+        
+        print('Display: Clear .', end='')
         self.TurnOnDisplay()
 
     def sleep(self):
