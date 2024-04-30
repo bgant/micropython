@@ -114,14 +114,15 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         self.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
-        print('Display busy .', end='')
+        #print('Display busy .', end='')
         while self.digital_read(self.busy_pin) == 1:
             print('.', end='')
             self.delay_ms(1000) 
-        print(' ready')
+        print(' done')
         self.delay_ms(20)
         
     def TurnOnDisplay(self):
+        print('Display Update .', end='')
         self.send_command(0x20)  # Activate Display Update Sequence
         self.ReadBusy()
 
@@ -146,13 +147,15 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
     
 
     def init(self):
-        print('Display init')
+        print('Display Reset Pin .', end='')
         self.reset()
+        self.ReadBusy()
         
-        self.ReadBusy()   
+        print('Display Software Reset .', end='') 
         self.send_command(0x12)  #SWRESET
         self.ReadBusy()   
 
+        print('Display Configuration .', end='')
         self.send_command(0x01) #Driver output control      
         self.send_data(0xf9)
         self.send_data(0x00)

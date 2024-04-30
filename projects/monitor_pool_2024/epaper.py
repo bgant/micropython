@@ -122,7 +122,7 @@ elif 'TinyS3' in implementation[2]:
             self.epd.imagered.fill(0xff)
     
     def display(self):  # Device specific display
-        print('Display updating')
+        #print('Display updating')
         if self.display_type == 'EPD_2in13_V3':
             self.epd.display(self.epd.buffer)
         elif self.display_type == 'EPD_2in13_B_V4':
@@ -196,8 +196,10 @@ elif 'TinyS3' in implementation[2]:
                     self.update_text(text='feels like', x=15)
                 self.display()
         finally:
+            print('Display Deep Sleep .', end='')
             self.epd.ReadBusy()
             self.epd.delay_ms(2000)
+            self.epd.sleep()    # Display enters Deep Sleep Mode 01 / To wake call reset() or init()
             self.epd.spi.deinit()
             self.epd.cs_pin(1)  # Deselect Shared SPI Peripheral
 
