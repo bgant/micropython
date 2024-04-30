@@ -33,10 +33,10 @@ class PROJECT:
         
         if 'TinyS3' in implementation[2]:
             from tinys3 import get_vbus_present
-            self.vbus = get_vbus_present()
+            self.vbus = get_vbus_present  # type(vbus) is <class 'function'>
         elif 'TinyPICO' in implementation[2]:
             from machine import Pin
-            self.vbus = Pin(9, Pin.IN)
+            self.vbus = Pin(9, Pin.IN)    # type(vbus) is <class 'Pin'>
         
         if self.key_store.get('webdis_key'):
             self.webdis_key = self.key_store.get('webdis_key')  # Webdis Water Temperature Data
@@ -46,7 +46,7 @@ class PROJECT:
 
     def check_power(self):
         '''Check if Power is connected to USB'''
-        if not self.vbus():
+        if not self.vbus():  # vbus() returns True/False (TinyS3) or 1/0 (TinyPICO)
             if self.power_last:
                 self.wifi.disconnect()
                 self.epaper.update(power=False)
