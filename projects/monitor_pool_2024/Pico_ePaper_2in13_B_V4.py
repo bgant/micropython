@@ -63,11 +63,11 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         self.dc_pin = Pin(DC_PIN, Pin.OUT)
         
         
-        self.buffer_balck = bytearray(self.height * self.width // 8)
+        self.buffer_black = bytearray(self.height * self.width // 8)
         self.buffer_red = bytearray(self.height * self.width // 8)
-        self.imageblack = framebuf.FrameBuffer(self.buffer_balck, self.width, self.height, framebuf.MONO_HLSB)
+        self.imageblack = framebuf.FrameBuffer(self.buffer_black, self.width, self.height, framebuf.MONO_HLSB)
         self.imagered = framebuf.FrameBuffer(self.buffer_red, self.width, self.height, framebuf.MONO_HLSB)
-        super().__init__(self.buffer_balck, self.width, self.height, framebuf.MONO_HLSB)
+        super().__init__(self.buffer_black, self.width, self.height, framebuf.MONO_HLSB)
         self.init()
 
     def digital_write(self, pin, value):
@@ -182,7 +182,7 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         
     def display(self):
         self.send_command(0x24)
-        self.send_data1(self.buffer_balck)
+        self.send_data1(self.buffer_black)
         
         self.send_command(0x26)
         self.send_data1(self.buffer_red)  
@@ -191,9 +191,9 @@ class EPD_2in13_B_V4_Portrait(framebuf.FrameBuffer):
         self.TurnOnDisplay()
 
     
-    def Clear(self, colorblack, colorred):
+    def Clear(self, colorblack=0xff, colorred=0xff):
         self.send_command(0x24)
-        self.send_data1([colorred] * self.height * int(self.width / 8))
+        self.send_data1([colorblack] * self.height * int(self.width / 8))
         
         self.send_command(0x26)
         self.send_data1([colorred] * self.height * int(self.width / 8))
