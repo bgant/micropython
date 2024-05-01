@@ -170,8 +170,7 @@ elif 'TinyS3' in implementation[2]:
         try:
             self.epd.cs_pin(0)  # Select Shared SPI Peripheral
             self.epd.spi.init(phase=0)  # Waveshare uses phase=0 and MAX31856 uses phase=1
-            self.epd.reset()
-            #self.epd.init()
+            self.epd.init()
             #self.epd.TurnOnDisplay()
             #self.epd.delay_ms(2000)
             if not power:
