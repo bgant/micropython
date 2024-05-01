@@ -1,8 +1,8 @@
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer, lightsleep
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
-main_interval = 450        # Time in seconds between loops (loop takes 90 seconds)
-state = 'thread'           # [ thread | aiorepl | asyncio | timer | loop ]
+main_interval = 60        # Time in seconds between loops (loop takes 90 seconds)
+state = 'thread'           # Options: 'thread' 'aiorepl' 'asyncio' 'timer' 'loop'
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
@@ -130,7 +130,7 @@ project = PROJECT()
 ###################################
 # Run in thread, asyncio, loop, etc
 ###################################
-print()
+print(f'project.tasks() running in {state} every {main_interval} seconds')
 if state is 'thread':
     import _thread
     def main_loop():
@@ -139,6 +139,7 @@ if state is 'thread':
             sleep_ms(main_interval*1000)
     print('Launching Thread Loop')
     _thread.start_new_thread(main_loop,())
+    
 elif state is 'aiorepl':
     import asyncio
     import aiorepl
@@ -152,6 +153,7 @@ elif state is 'aiorepl':
         repl = asyncio.create_task(aiorepl.task())
         await asyncio.gather(task1,repl)
     asyncio.run(launch_coroutines())
+
 elif state is 'asyncio':
     import asyncio
     async def main_loop():
@@ -160,21 +162,20 @@ elif state is 'asyncio':
     event_loop = asyncio.get_event_loop()
     event_loop.create_task(main_loop())
     event_loop.run_forever()
+
 elif state is 'timer':
     def timer_function(timer_main):
         project.tasks()
-    print(f'main.py running in Timer every {main_interval} seconds')
     timer_main = Timer(0)
     timer_function(timer_main)  # Initial Run on Boot
     timer_main.init(period=main_interval*1000, callback=timer_function)
     # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
+
 elif state is 'loop':
-    def main_loop(timer_main):
-        project.tasks()
-    print('main.py running in while True loop every {main_interval} seconds (Ctrl+C to REPL)')
     while True:
-        main_loop()
+        project.tasks()
         sleep_ms(main_interval*1000)
+
 else:
     print(f'Unknown State: {state}')
 
