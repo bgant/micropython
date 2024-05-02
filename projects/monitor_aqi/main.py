@@ -23,6 +23,7 @@ class PROJECT:
         self.webdis = WEBDIS()
         self.data = None
         self.aqi = None
+        self.average_aqi = None
         self.webdis_key = self.key_store.get('webdis_key')
         self.moving_average = deque((),60)  # 1-minute list of readings at 1 per second
 
@@ -41,6 +42,7 @@ class PROJECT:
     def webdis_loop(self):
         '''Timer loop that sends current sensor data to Webdis/Redis'''
         self.webdis.timeseries(self.webdis_key,self.average_aqi)
+        print(f'{self.average_aqi}\t{self.webdis.webdis_json}')
         wdt.feed()
         
 project = PROJECT()
