@@ -31,27 +31,36 @@ class PROJECT:
         while True:
             if self.sensor.uart.any():
                 self.data = self.sensor.read()
-                self.aqi = self.calculate.aqi(self.data['PM2_5_ATM'],self.data['PM10_0_ATM'])
-                self.moving_average.append(self.aqi)
+
+    def moving_average_loop(self):
+        '''With deque 60 and Timer Period 5 this should be about a 5-minute moving average'''
+        self.aqi = self.calculate.aqi(self.data['PM2_5_ATM'],self.data['PM10_0_ATM'])
+        self.moving_average.append(self.aqi)
+        self.average_aqi = sum(self.moving_average)/len(self.moving_average)
                 
     def webdis_loop(self):
         '''Timer loop that sends current sensor data to Webdis/Redis'''
-        self.webdis.timeseries(self.webdis_key,self.aqi)
+        self.webdis.timeseries(self.webdis_key,self.average_aqi)
         wdt.feed()
         
 project = PROJECT()
 
-print('Launching continuous UART sensor read loop')
+print('Launching continuous UART sensor read loop in Thread')
 sleep(1)
 _thread.start_new_thread(project.read_loop,())
 sleep(1)
 
-def timer_function(timer_main):
+print('Creating Moving Average Timer')
+def moving_average_loop_function(t0):
+    project.moving_average_loop()
+t0 = Timer(0)
+t0.init(period=5000, callback=moving_average_loop_function)
+
+print('Creating Webdis Timer')
+def webdis_loop_function(t1):
     project.webdis_loop()
-timer_main = Timer(0)
-main_interval=30  # Seconds between Webdis Send
-print(f'Creating {main_interval} second Timer to send AQI to {project.webdis_key}')
-timer_main.init(period=main_interval*1000, callback=timer_function)
+t1 = Timer(1)
+t1.init(period=30000, callback=webdis_loop_function)
 # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 
 print()
@@ -59,6 +68,7 @@ print('='*45)
 print('Useful Commands:')
 print('  project.data')
 print('  project.aqi')
+print('  project.average_aqi')
 print('  project.webdis_key')
 print('  project.webdis.webdis_json')
 print('  project.sensor.uart')
