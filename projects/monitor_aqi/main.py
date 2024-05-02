@@ -41,9 +41,13 @@ class PROJECT:
                 
     def webdis_loop(self):
         '''Timer loop that sends current sensor data to Webdis/Redis'''
-        self.webdis.timeseries(self.webdis_key,self.average_aqi)
-        print(f'{self.average_aqi}\t{self.webdis.webdis_json}')
-        wdt.feed()
+        try:
+            self.webdis.timeseries(self.webdis_key,self.average_aqi)
+            print(f'{self.average_aqi}\t{self.webdis.webdis_json}')
+            wdt.feed()
+        except:
+            pass
+        
         
 project = PROJECT()
 
