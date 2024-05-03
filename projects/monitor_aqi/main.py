@@ -23,8 +23,9 @@ class PROJECT:
         self.webdis = WEBDIS()
         self.data = None
         self.aqi = None
-        self.average_aqi = None
+        self.aqi_average = None
         self.webdis_key = self.key_store.get('webdis_key')
+        self.webdis_key_average = self.webdis_key + '-average'
         self.moving_average = deque((),60)  # 1-minute list of readings at 1 per second
 
     def read_loop(self):
@@ -37,13 +38,12 @@ class PROJECT:
         '''With deque 60 and Timer Period 5 this should be about a 5-minute moving average'''
         self.aqi = self.calculate.aqi(self.data['PM2_5_ATM'],self.data['PM10_0_ATM'])
         self.moving_average.append(self.aqi)
-        self.average_aqi = sum(self.moving_average)/len(self.moving_average)
+        self.aqi_average = sum(self.moving_average)/len(self.moving_average)
                 
     def webdis_loop(self):
         '''Timer loop that sends current sensor data to Webdis/Redis'''
         try:
-            self.webdis.timeseries(self.webdis_key,self.average_aqi)
-            print(f'{self.average_aqi}\t{self.webdis.webdis_json}')
+            self.webdis.timeseries(self.webdis_key_average,self.aqi_average)
             wdt.feed()
         except:
             pass
@@ -74,7 +74,7 @@ print('='*45)
 print('Useful Commands:')
 print('  project.data')
 print('  project.aqi')
-print('  project.average_aqi')
+print('  project.aqi_average')
 print('  project.webdis_key')
 print('  project.webdis.webdis_json')
 print('  project.sensor.uart')
