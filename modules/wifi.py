@@ -20,7 +20,6 @@ try:
     f = open('key_store.py','r')
     f.close()
     from key_store import KEY_STORE
-    key_store = KEY_STORE()
 except OSError:
     print('key_store.py is required to use this module')    
     exit()
@@ -31,6 +30,8 @@ class WIFI:
         self.wlan.active(False)  # Disable on initialization
         
         # Load secrets from local key_store.db
+        key_store = KEY_STORE()
+        #self.ntptime.host = key_store.get('ntp_host')
         if key_store.get('ssid_name') and key_store.get('ssid_pass'):
             self.ssid_name = key_store.get('ssid_name')
             self.ssid_pass = key_store.get('ssid_pass')
@@ -39,13 +40,14 @@ class WIFI:
             self.ssid_pass = input('Enter WiFi password - ')
             key_store.set('ssid_name',self.ssid_name)
             key_store.set('ssid_pass',self.ssid_pass)
-            
+        key_store.db.close()
+        
         self.mac = ''
         self.ip = ''
         self.subnet = ''
         self.gateway = ''
         self.dns = ''
-    
+ 
     def active(self):
         return self.wlan.active()
     
@@ -90,7 +92,6 @@ class WIFI:
             return
 
     def ntp(self):
-        #ntptime.host = key_store.get('ntp_host')
         print("NTP Server: ", ntptime.host)
         start_ntp = utime.ticks_ms()
         while utime.time() < 10000:  # Clock is not set with NTP if unixtime is less than 10000
