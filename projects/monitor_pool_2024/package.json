@@ -4,6 +4,7 @@
     ["epaper.py", "github:bgant/micropython/projects/monitor_pool_2024/epaper.py"],
     ["thermocouple.py", "github:bgant/micropython/projects/monitor_pool_2024/thermocouple.py"],
     ["Pico_ePaper_2in13_B_V4.py", "github:bgant/micropython/projects/monitor_pool_2024/Pico_ePaper_2in13_B_V4.py"],
+    ["Pico_ePaper_2in13_V4.py", "github:bgant/micropython/projects/monitor_pool_2024/Pico_ePaper_2in13_V4.py"],
     ["GothamBlack_54_Numbers.py", "github:bgant/micropython/projects/monitor_pool_2024/GothamBlack_54_Numbers.py"],
     ["GothamBlack_25.py", "github:bgant/micropython/projects/monitor_pool_2024/GothamBlack_25.py"],
     ["GothamBlack_46_Numbers.py", "github:bgant/micropython/projects/monitor_pool_2024/GothamBlack_46_Numbers.py"],
