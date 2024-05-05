@@ -26,7 +26,7 @@ key_store = KEY_STORE()
 if key_store.get('display_type'):
     display_type = key_store.get('display_type')
 else:  # key_store values are empty
-    options = ['EPD_2in13_V3','EPD_2in13_B_V4']
+    options = ['EPD_2in13_V4','EPD_2in13_B_V4']
     user_input = ''
     input_message = "Pick a Display option:\n"
     for index, item in enumerate(options):
@@ -44,7 +44,7 @@ class EPAPER:
         '''Waveshare Display Differences'''
         self.display_type = key_store.get('display_type')
         print(f'E-Ink Display is {self.display_type}')
-        if self.display_type == 'EPD_2in13_V3':  # Waveshare 2.13" Black/White E-Ink (V3 Silver Sticker)
+        if self.display_type == 'EPD_2in13_V4':  # Waveshare 2.13" Black/White E-Ink (V3 or V4 Silver Sticker)
             '''
 mpremote a0 mip install --target= github:waveshareteam/Pico_ePaper_Code/python/Pico_ePaper-2.13_V3.py
 mpremote a0 cp :Pico_ePaper-2.13_V3.py :Pico_ePaper_2in13_V3.py   # No '.' or '-' in micropython module names allowed
@@ -70,8 +70,8 @@ elif 'TinyS3' in implementation[2]:
     CS_PIN          = 34
     BUSY_PIN        = 7
             '''
-            from Pico_ePaper_2in13_V3 import EPD_2in13_V3_Portrait
-            self.epd = EPD_2in13_V3_Portrait()
+            from Pico_ePaper_2in13_V4 import EPD_2in13_V4_Portrait
+            self.epd = EPD_2in13_V4_Portrait()
             self.epd.Clear()
             
         elif self.display_type == 'EPD_2in13_B_V4':  # Waveshare 2.13" Black/White/Red E-Ink (V4 Silver Sticker)
@@ -115,7 +115,7 @@ elif 'TinyS3' in implementation[2]:
             exit(1)
 
     def fill(self):  # Device specific fill
-        if self.display_type == 'EPD_2in13_V3':
+        if self.display_type == 'EPD_2in13_V4':
             self.epd.fill(0xff)  # Fill buffer with white space
         elif self.display_type == 'EPD_2in13_B_V4':
             self.epd.imageblack.fill(0xff)
@@ -123,7 +123,7 @@ elif 'TinyS3' in implementation[2]:
     
     def display(self):  # Device specific display
         #print('Display updating')
-        if self.display_type == 'EPD_2in13_V3':
+        if self.display_type == 'EPD_2in13_V4':
             self.epd.display(self.epd.buffer)
         elif self.display_type == 'EPD_2in13_B_V4':
             self.epd.display()

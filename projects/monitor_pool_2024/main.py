@@ -1,8 +1,8 @@
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer, lightsleep
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
-main_interval = 60        # Time in seconds between loops (loop takes 90 seconds)
-state = 'thread'           # Options: 'thread' 'aiorepl' 'asyncio' 'timer' 'loop'
+main_interval = 120        # Time in seconds between loops (loop takes 90 seconds)
+state = 'timer'            # Options: 'thread' 'aiorepl' 'asyncio' 'timer' 'loop'
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
