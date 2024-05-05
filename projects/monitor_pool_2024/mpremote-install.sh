@@ -9,7 +9,7 @@ mpremote $TTY mip install --target= github:bgant/micropython/modules/key_store.p
 mpremote $TTY mip install --target= github:bgant/micropython/modules/wifi.py
 mpremote $TTY mip install --target= github:bgant/micropython/modules/webdis.py
 
-mpremote $TTY mip install --target= https://raw.githubusercontent.com/micropython/micropython-lib/master/micropython/aiorepl/aiorepl.py
+#mpremote $TTY mip install --target= https://raw.githubusercontent.com/micropython/micropython-lib/master/micropython/aiorepl/aiorepl.py
 
 # Added these into my repo just in case they change significantly:
 #mpremote $TTY mip install --target= github:peterhinch/micropython-font-to-py/writer/writer.py
