@@ -30,25 +30,25 @@ class THERMOCOUPLE:
         try:
             self.cs(0)  # Select Shared SPI Peripheral
             self.spi.init(phase=1)  # Waveshare uses phase=0 and MAX31856 uses phase=1
-            attempts = 12  # Number of tries
-            print(f'Taking {attempts} temperature readings to average...')
+            attempts = 5  # Number of tries
+            #print(f'Taking {attempts} temperature readings to average...')
             readings = []
             while attempts:
                 data = self.max31856.temperature(read_chip=True)
-                if ( data is not 0.0 ) and ( data < 100 ):  # First reading is sometimes Zero / Sometimes crazy high
-                    print(f'Thermocouple Read: {data:.2f} C')
+                if ( data is not 0.0 ) and ( data < 100 ):  # First reading is sometimes Zero or Low / Sometimes crazy high
+                    #print(f'Thermocouple Read: {data:.2f} C')
                     readings.append(data)
-                else:
-                    print(f'Thermocouple Read: {data:.2f} C ... ignoring reading')
+                #else:
+                    #print(f'Thermocouple Read: {data:.2f} C ... ignoring reading')
                 attempts -= 1
-                sleep_ms(2000)
+                sleep_ms(100)
             if len(readings) > 2:
                 readings.remove(max(readings))
                 readings.remove(min(readings))
                 self.tempC = sum(readings)/len(readings)
                 self.tempF = (self.tempC * 9.0/5.0) + 32
-                print(f'Water Temp Avg:    {self.tempC:.2f} C')
-                print(f'Water Temp Avg:    {self.tempF:.2f} F')
+                #print(f'Water Temp Avg:    {self.tempC:.2f} C')
+                #print(f'Water Temp Avg:    {self.tempF:.2f} F')
             else:
                 return None
         finally:
