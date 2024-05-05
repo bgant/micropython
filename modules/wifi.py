@@ -94,14 +94,20 @@ class WIFI:
 
     def ntp(self):
         print("NTP Server: ", ntptime.host)
+        try:
+            ntptime.settime()
+        except:
+            pass
         start_ntp = utime.ticks_ms()
         while utime.time() < 10000:  # Clock is not set with NTP if unixtime is less than 10000
-            ntptime.settime()  # If time is not UTC then Thonny is setting device time
-            if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 10 second timeout
-                print('NTP Timeout... Resetting Device')
-                reset()
-        else:
-            ntptime.settime()  # If you just want to correct skew
+            try:
+                ntptime.settime()  # If time is not UTC then Thonny is setting device time
+                if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 15 second timeout
+                    print('NTP Timeout... Resetting Device')
+                    reset()
+                utime.sleep(1)
+            except:
+                pass
         print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
         print()
         
