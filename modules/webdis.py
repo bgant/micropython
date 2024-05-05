@@ -59,6 +59,10 @@ class WEBDIS:
     def timeseries(self,key=None,value=None):
         self.URL = f'http://{self.host}:{self.port}/TS.ADD/{key}/*/{value}'
         self.send(command='TS.ADD')
+        
+    def timeseriesget(self,key=None):
+        self.URL = f'http://{self.host}:{self.port}/TS.GET/{key}'
+        self.send(command='TS.GET')
 
     def send(self, command=None):
         r = urequests.get(self.URL)
