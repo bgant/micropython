@@ -11,6 +11,7 @@ from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
 from sys import implementation
 from collections import deque
+import asyncio
 
 
 class PROJECT:
@@ -129,30 +130,31 @@ def sensor_loop_function(t0):
     project.water()
 t0 = Timer(0)
 t0.init(period=5000, callback=sensor_loop_function)
-sensor_loop_function(t0)  # Run on boot
-
-print('Creating Display Update Timer')
-def display_loop_function(t1):
-    try:
-        project.air()
-        project.update_display()
-        project.cleanup()
-        wdt.feed()
-    except:
-        pass
-t1 = Timer(1)
-sleep_ms(1000)
-t1.init(period=60000, callback=display_loop_function)
-display_loop_function(t1)  # Run on boot
 
 print('Creating Webdis Timer')
-def webdis_loop_function(t2):
+def webdis_loop_function(t1):
     project.check_power()
     project.check_wifi()
     project.send_to_webdis()
-t2 = Timer(2)
-t2.init(period=30000, callback=webdis_loop_function)
+t1 = Timer(1)
+t1.init(period=30000, callback=webdis_loop_function)
 # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
+
+print('Creating Display Update Timer')
+async def display_loop_function(t2):
+    project.air()
+    project.update_display()
+    project.cleanup()
+    wdt.feed()
+t2 = Timer(2)
+t2.init(period=60000, callback=display_loop_function)
+
+print('Running functions on boot')
+sensor_loop_function(t0)
+sleep_ms(2000)
+asyncio.run(display_loop_function(t2))
+
+
 
 '''
 ###################################
