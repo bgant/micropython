@@ -128,8 +128,8 @@ print('Creating Sensor Loop Timer')
 def sensor_loop_function(t0):
     project.water()
 t0 = Timer(0)
-sensor_loop_function(t0)  # Run on boot
 t0.init(period=5000, callback=sensor_loop_function)
+sensor_loop_function(t0)  # Run on boot
 
 print('Creating Display Update Timer')
 def display_loop_function(t1):
@@ -142,8 +142,8 @@ def display_loop_function(t1):
         pass
 t1 = Timer(1)
 sleep_ms(1000)
-display_loop_function(t1)  # Run on boot
 t1.init(period=60000, callback=display_loop_function)
+display_loop_function(t1)  # Run on boot
 
 print('Creating Webdis Timer')
 def webdis_loop_function(t2):
