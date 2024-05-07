@@ -71,7 +71,7 @@ class WIFI:
             self.wlan.config(reconnects=5)
             if 'TinyS3' in implementation[2]:
                 self.wlan.config(pm=self.wlan.PM_NONE)
-                self.wlan.config(txpower=10)  # values between 2 and 21 are valid
+                self.wlan.config(txpower=5)  # values between 2 and 21 are valid
             
             self.mac = hexlify(self.wlan.config('mac'),':').decode()
             print('')
@@ -100,40 +100,21 @@ class WIFI:
             while self.wlan.status() == network.STAT_IDLE:
                 print('.', end='')
                 utime.sleep_ms(1000)
-                self.timeout()
-                
+                self.timeout() 
             print(' WiFi connecting .', end='')
             while self.wlan.status() == network.STAT_CONNECTING:
                 print('.', end='')
                 utime.sleep_ms(1000)
-                self.timeout()
-                     
+                self.timeout() 
             print(' Wifi Security .', end='')
-            while self.wlan.status() == network.STAT_WRONG_PASSWORD:
+            while '20' in str(self.wlan.status()):  # 20x WRONG_PASSWORD, NO_AP_FOUND, BEACON_TIMEOUT, etc.
                 print('.', end='')
                 utime.sleep_ms(1000)
                 self.timeout()
-            
-            if self.wlan.status() == network.STAT_NO_AP_FOUND:
-                print (f' STAT_NO_AP_FOUND:', self.wlan.status())
-            elif self.wlan.status() == network.STAT_BEACON_TIMEOUT:
-                print (f' STAT_BEACON_TIMEOUT', self.wlan.status())
-            elif self.wlan.status() == network.STAT_ASSOC_FAIL:
-                print (f' STAT_ASSOC_FAIL', self.wlan.status())
-            elif self.wlan.status() == network.STAT_HANDSHAKE_TIMEOUT:
-                print (f' STAT_HANDSHAKE_TIMEOUT', self.wlan.status())
-            elif self.wlan.status() == network.STAT_IDLE:
-                pass
-            elif self.wlan.status() == network.STAT_CONNECTING:
-                pass
-            elif self.wlan.status() == network.STAT_GOT_IP:
-                pass
-            #else:
-            #    print(f'Unknown status:', self.wlan.status())
             print()
             
     def timeout(self):
-        if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > 20000:  # 20 second timeout
+        if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > 40000:  # Wifi timeout in milliseconds
             print('Wifi Timeout... Resetting Device')
             utime.sleep(1)
             reset()
@@ -170,6 +151,26 @@ class WIFI:
     1001: CONNECTING
     1010: GOT_IP
 '''
+
+'''
+            if self.wlan.status() == network.STAT_NO_AP_FOUND:
+                print (f' STAT_NO_AP_FOUND:', self.wlan.status())
+            elif self.wlan.status() == network.STAT_BEACON_TIMEOUT:
+                print (f' STAT_BEACON_TIMEOUT', self.wlan.status())
+            elif self.wlan.status() == network.STAT_ASSOC_FAIL:
+                print (f' STAT_ASSOC_FAIL', self.wlan.status())
+            elif self.wlan.status() == network.STAT_HANDSHAKE_TIMEOUT:
+                print (f' STAT_HANDSHAKE_TIMEOUT', self.wlan.status())
+            elif self.wlan.status() == network.STAT_IDLE:
+                pass
+            elif self.wlan.status() == network.STAT_CONNECTING:
+                pass
+            elif self.wlan.status() == network.STAT_GOT_IP:
+                pass
+            #else:
+            #    print(f'Unknown status:', self.wlan.status())
+            print()
+'''            
 
 '''
             #start_wifi = utime.ticks_ms()
