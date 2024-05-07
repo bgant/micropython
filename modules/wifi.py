@@ -59,7 +59,7 @@ class WIFI:
         self.wlan.active(False)
         return 'Wifi Off'
     
-    def connect(self):
+    def connect(self,need_ntp=False):
         if self.wlan.isconnected():
             return 'Wifi is already connected and working'
         else:
@@ -90,7 +90,8 @@ class WIFI:
             print('   Gateway: ', self.gateway)
             print('       DNS: ', self.dns)
             print()
-            self.ntp()
+            if need_ntp:
+                self.ntp()
             return
         
     def status(self):
@@ -131,11 +132,11 @@ class WIFI:
             print('.', end='')
             try:
                 ntptime.settime()  # If time is not UTC then Thonny is setting device time
-                if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 10 second timeout
-                    print('Timeout... Resetting Device')
-                    reset()
             except:
                 pass
+            if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 15000:  # 15 second timeout
+                print('Timeout... Resetting Device')
+                reset()
             utime.sleep_ms(1000)
         print()
         print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
