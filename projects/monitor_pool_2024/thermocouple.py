@@ -24,6 +24,8 @@ class THERMOCOUPLE:
         else:
             self.cs = Pin(6, Pin.OUT)   # Assign device its own chip select (CS) pin
         self.max31856 = Max31856(self.spi, self.cs, tc_type)
+        
+        self.adjustment = -3.5  # Temperature (C) adjustment from test with Thermometer 
 
     def read(self):
         '''Read Thermocouple Temperature'''
@@ -45,7 +47,7 @@ class THERMOCOUPLE:
             if len(readings) > 2:
                 readings.remove(max(readings))
                 readings.remove(min(readings))
-                self.tempC = sum(readings)/len(readings)
+                self.tempC = sum(readings)/len(readings) + self.adjustment
                 self.tempF = (self.tempC * 9.0/5.0) + 32
                 #print(f'Water Temp Avg:    {self.tempC:.2f} C')
                 #print(f'Water Temp Avg:    {self.tempF:.2f} F')
