@@ -25,7 +25,7 @@ class THERMOCOUPLE:
             self.cs = Pin(6, Pin.OUT)   # Assign device its own chip select (CS) pin
         self.max31856 = Max31856(self.spi, self.cs, tc_type)
         
-        self.adjustment = -3.5  # Temperature (C) adjustment from test with Thermometer 
+        self.adjustment = -3.8  # Temperature (C) adjustment from test with Thermometers 
 
     def read(self):
         '''Read Thermocouple Temperature'''
