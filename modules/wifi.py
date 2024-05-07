@@ -10,11 +10,11 @@ Module import example:
 '''
 
 from machine import reset
-from network import WLAN, STA_IF
+import network
 from ubinascii import hexlify
 import utime
 import ntptime
-from sys import exit
+from sys import exit, implementation
 
 try:
     f = open('key_store.py','r')
@@ -26,7 +26,7 @@ except OSError:
 
 class WIFI:
     def __init__(self):
-        self.wlan = WLAN(STA_IF)
+        self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(False)  # Disable on initialization
         
         # Load secrets from local key_store.db
@@ -64,22 +64,23 @@ class WIFI:
             return 'Wifi is already connected and working'
         else:
             self.wlan.active(False)
+            utime.sleep_ms(500)
             self.wlan.active(True)
+            utime.sleep_ms(500)
+            
+            self.wlan.config(reconnects=5)
+            if 'TinyS3' in implementation[2]:
+                self.wlan.config(pm=self.wlan.PM_NONE)
+                self.wlan.config(txpower=10)  # values between 2 and 21 are valid
             
             self.mac = hexlify(self.wlan.config('mac'),':').decode()
             print('')
             print('       MAC: ', self.mac)
-            print(' WiFi SSID: ', self.ssid_name)
-            try:
-                self.wlan.connect(self.ssid_name, self.ssid_pass)
-            except:
-                pass
-            start_wifi = utime.ticks_ms()
-            while not self.wlan.isconnected():
-                if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second timeout
-                    print('Wifi Timeout... Resetting Device')
-                    utime.sleep(2)
-                    reset()
+            print(' Wifi SSID: ', self.ssid_name)
+            self.wlan.connect(self.ssid_name, self.ssid_pass)
+            self.status()
+                    
+            print()      
             self.ip      = self.wlan.ifconfig()[0]
             self.subnet  = self.wlan.ifconfig()[1]
             self.gateway = self.wlan.ifconfig()[2]
@@ -91,23 +92,90 @@ class WIFI:
             print()
             self.ntp()
             return
+        
+    def status(self):
+        self.start_wifi = utime.ticks_ms()
+        while self.wlan.status() != network.STAT_GOT_IP:
+            print(' Wifi idle .', end='')
+            while self.wlan.status() == network.STAT_IDLE:
+                print('.', end='')
+                utime.sleep_ms(1000)
+                self.timeout()
+                
+            print(' WiFi connecting .', end='')
+            while self.wlan.status() == network.STAT_CONNECTING:
+                print('.', end='')
+                utime.sleep_ms(1000)
+                self.timeout()
+                     
+            print(' Wifi Security .', end='')
+            while self.wlan.status() == network.STAT_WRONG_PASSWORD:
+                print('.', end='')
+                utime.sleep_ms(1000)
+                self.timeout()
+            
+            if self.wlan.status() == network.STAT_NO_AP_FOUND:
+                print (f' STAT_NO_AP_FOUND:', self.wlan.status())
+            elif self.wlan.status() == network.STAT_BEACON_TIMEOUT:
+                print (f' STAT_BEACON_TIMEOUT', self.wlan.status())
+            elif self.wlan.status() == network.STAT_ASSOC_FAIL:
+                print (f' STAT_ASSOC_FAIL', self.wlan.status())
+            elif self.wlan.status() == network.STAT_HANDSHAKE_TIMEOUT:
+                print (f' STAT_HANDSHAKE_TIMEOUT', self.wlan.status())
+            elif self.wlan.status() == network.STAT_IDLE:
+                pass
+            elif self.wlan.status() == network.STAT_CONNECTING:
+                pass
+            elif self.wlan.status() == network.STAT_GOT_IP:
+                pass
+            #else:
+            #    print(f'Unknown status:', self.wlan.status())
+            print()
+            
+    def timeout(self):
+        if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > 20000:  # 20 second timeout
+            print('Wifi Timeout... Resetting Device')
+            utime.sleep(1)
+            reset()
 
     def ntp(self):
-        print("NTP Server: ", ntptime.host)
+        print(f'NTP Server:  {ntptime.host} ', end='')
         try:
             ntptime.settime()
+            utime.sleep_ms(1000)
         except:
             pass
         start_ntp = utime.ticks_ms()
         while utime.time() < 10000:  # Clock is not set with NTP if unixtime is less than 10000
+            print('.', end='')
             try:
                 ntptime.settime()  # If time is not UTC then Thonny is setting device time
-                if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 15 second timeout
-                    print('NTP Timeout... Resetting Device')
+                if utime.ticks_diff(utime.ticks_ms(), start_ntp) > 10000:  # 10 second timeout
+                    print('Timeout... Resetting Device')
                     reset()
-                utime.sleep(1)
             except:
                 pass
+            utime.sleep_ms(1000)
+        print()
         print('  UTC Time:  {}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'.format(*utime.localtime()))
         print()
-        
+
+'''
+    200: BEACON_TIMEOUT
+    201: NO_AP_FOUND
+    202: WRONG_PASSWORD
+    203: ASSOC_FAIL
+    204: HANDSHAKE_TIMEOUT
+    1000: IDLE
+    1001: CONNECTING
+    1010: GOT_IP
+'''
+
+'''
+            #start_wifi = utime.ticks_ms()
+            #while not self.wlan.isconnected():
+            #    if utime.ticks_diff(utime.ticks_ms(), start_wifi) > 20000:  # 20 second timeout
+            #        print('Wifi Timeout... Resetting Device')
+            #        utime.sleep(2)
+            #        reset()
+'''
