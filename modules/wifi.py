@@ -99,24 +99,24 @@ class WIFI:
         while self.wlan.status() != network.STAT_GOT_IP:
             print(' Wifi idle .', end='')
             while self.wlan.status() == network.STAT_IDLE:
-                print('.', end='')
-                utime.sleep_ms(1000)
-                self.timeout() 
+                self.pause(1) 
             print(' WiFi connecting .', end='')
             while self.wlan.status() == network.STAT_CONNECTING:
-                print('.', end='')
-                utime.sleep_ms(1000)
-                self.timeout() 
+                self.pause(1)
             print(' Wifi Security .', end='')
             while '20' in str(self.wlan.status()):  # 20x WRONG_PASSWORD, NO_AP_FOUND, BEACON_TIMEOUT, etc.
-                print('.', end='')
-                utime.sleep_ms(1000)
-                self.timeout()
-            print()
+                self.pause(1)
+            print(' Waiting a few seconds before trying again')
+            utime.sleep(3)
             
-    def timeout(self):
-        if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > 40000:  # Wifi timeout in milliseconds
-            print('Wifi Timeout... Resetting Device')
+    def pause(self,pause_seconds=1):
+        print('.', end='')
+        utime.sleep(pause_seconds)
+        self.timeout(timeout_seconds=40)
+        
+    def timeout(self,timeout_seconds=20):
+        if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > (timeout_seconds*1000):  # Wifi timeout in milliseconds
+            print(' Wifi Timeout... Resetting Device')
             utime.sleep(1)
             reset()
 
