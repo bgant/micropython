@@ -20,7 +20,8 @@ class PROJECT:
         self.key_store = KEY_STORE()
         self.wifi = WIFI()
         self.wifi.connect()
-        self.webdis = WEBDIS()
+        self.webdis_water = WEBDIS()
+        self.webdis_air = WEBDIS()
         self.thermocouple = THERMOCOUPLE()
         self.epaper = EPAPER()
         
@@ -83,13 +84,13 @@ class PROJECT:
     
     def send_to_webdis(self):
         '''Send current water temperature to Webdis'''
-        self.webdis.timeseries(self.webdis_key,self.water_average)
+        self.webdis_water.timeseries(self.webdis_key,self.water_average)
         print(f'{self.water_now} sent to Webdis {self.webdis.webdis_json}')
     
     def air(self):
         '''Get current "Feels Like" Air temperature'''
-        self.webdis.get('nws-feelslike')
-        self.air_now = self.webdis.response_json
+        self.webdis_air.get('nws-feelslike')
+        self.air_now = self.webdis_air.response_json
         print(f'Air Feels Like {self.air_now} F')
     
     def update_display(self):
