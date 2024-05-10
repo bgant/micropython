@@ -43,25 +43,29 @@ class WEBDIS:
     def __init__(self):
         self.host = webdis_host
         self.port = webdis_port
+        if '443' in webdis_port:
+            self.URL_base = f'https://{self.host}/webdis/'
+        else:
+            self.URL_base = f'http://{self.host}:{self.port}/' 
 
     def ping(self):
-        self.URL = f'http://{self.host}:{self.port}/PING'
+        self.URL = self.URL_base + f'PING'
         self.send(command='PING')
 
     def set(self,key=None,value=None):
-        self.URL = f'http://{self.host}:{self.port}/SET/{key}/{value}'
+        self.URL = self.URL_base + f'SET/{key}/{value}'
         self.send(command='SET')
 
     def get(self,key=None):
-        self.URL = f'http://{self.host}:{self.port}/GET/{key}'
+        self.URL = self.URL_base + f'GET/{key}'
         self.send(command='GET')
 
     def timeseries(self,key=None,value=None):
-        self.URL = f'http://{self.host}:{self.port}/TS.ADD/{key}/*/{value}'
+        self.URL = self.URL_base + f'TS.ADD/{key}/*/{value}'
         self.send(command='TS.ADD')
         
     def timeseriesget(self,key=None):
-        self.URL = f'http://{self.host}:{self.port}/TS.GET/{key}'
+        self.URL = self.URL_base + f'TS.GET/{key}'
         self.send(command='TS.GET')
 
     def send(self, command=None):
@@ -72,3 +76,4 @@ class WEBDIS:
             self.response_json = json.loads(self.response_text)  # If Webdis string is JSON, convert to JSON format
         except:
             self.response_json = None
+
