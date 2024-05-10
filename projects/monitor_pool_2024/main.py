@@ -51,13 +51,13 @@ class PROJECT:
         '''Check if Power is connected to USB'''
         if not self.vbus():  # vbus() returns True/False (TinyS3) or 1/0 (TinyPICO)
             if self.power_last:
-                self.wifi.disconnect()
+                #self.wifi.disconnect()
                 self.epaper.update(power=False)
                 self.epaper.epd.ReadBusy()
                 sleep_ms(2000)
                 self.power_last = False
             wdt.feed()
-            lightsleep(30000)
+            #lightsleep(30000)
             return None
 
     def check_reset(self):
@@ -97,7 +97,7 @@ class PROJECT:
         air_text   = int(self.roundTraditional(self.air_now,0))   if type(self.air_now)   is float else self.air_now    # str or None
         if (water_text is self.water_last) and (air_text is self.air_last):
             print('No Temperature Changes... Skipping Display Update')
-        else:
+        elif self.vbus():
             self.epaper.update(water=self.water_average, air=self.air_now)
         #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
         
@@ -133,9 +133,9 @@ t0.init(period=5000, callback=sensor_loop_function)
 
 print('Creating Webdis Timer')
 def webdis_loop_function(t1):
-    project.check_power()
     project.check_wifi()
     project.send_to_webdis()
+    project.check_power()
 t1 = Timer(1)
 t1.init(period=30000, callback=webdis_loop_function)
 # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
@@ -145,6 +145,7 @@ async def display_loop_function(t2):
     project.air()
     project.update_display()
     project.cleanup()
+    project.check_reset()
     wdt.feed()
 t2 = Timer(2)
 t2.init(period=60000, callback=display_loop_function)
