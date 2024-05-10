@@ -106,7 +106,6 @@ class WIFI:
             print(' Wifi Security .', end='')
             while '20' in str(self.wlan.status()):  # 20x WRONG_PASSWORD, NO_AP_FOUND, BEACON_TIMEOUT, etc.
                 self.pause(1)
-            print(' Waiting a few seconds before trying again')
             utime.sleep(3)
             
     def pause(self,pause_seconds=1):
