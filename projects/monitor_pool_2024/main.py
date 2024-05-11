@@ -140,7 +140,6 @@ def webdis_loop_function(t):
     project.check_power()
 t1 = Timer(1)
 t1.init(period=30000, callback=webdis_loop_function)
-# View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 
 print('Creating Display Update Timer')
 def display_loop_function(t):
