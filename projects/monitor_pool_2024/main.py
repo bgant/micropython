@@ -9,7 +9,7 @@ from wifi import WIFI
 from webdis import WEBDIS
 from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
-from sys import implementation
+from sys import exit, implementation
 from collections import deque
 import asyncio
 
@@ -17,14 +17,12 @@ import asyncio
 class PROJECT:
     def __init__(self):
         # Load modules in this Class
-        self.key_store = KEY_STORE()
-        self.wifi = WIFI()
-        self.wifi.connect()
+        self.thermocouple = THERMOCOUPLE()
         self.webdis_water = WEBDIS()
         self.webdis_air = WEBDIS()
-        self.thermocouple = THERMOCOUPLE()
         self.epaper = EPAPER()
-        
+        self.wifi = WIFI()
+
         self.uptime = ticks_ms()
         self.water_now = None
         self.air_now = None
@@ -42,11 +40,14 @@ class PROJECT:
             from machine import Pin       # GPIO 9 is "Detect 5V Present"
             self.vbus = Pin(9, Pin.IN)    # type(vbus) is <class 'Pin'>
         
+        self.key_store = KEY_STORE()
         if self.key_store.get('webdis_key'):
             self.webdis_key = self.key_store.get('webdis_key')  # Webdis Water Temperature Data
         else:  # key_store values are empty
             self.webdis_key = input('Enter Webdis Key for storing Water Temp - ')
             self.key_store.set('webdis_key',self.webdis_key)
+        self.key_store.db.close()
+        self.wifi.connect()
 
     def check_power(self):
         '''Check if Power is connected to USB'''
@@ -127,13 +128,13 @@ class PROJECT:
 project = PROJECT()
 
 print('Creating Sensor Loop Timer')
-def sensor_loop_function(t0):
+def sensor_loop_function(t):
     project.water()
 t0 = Timer(0)
 t0.init(period=5000, callback=sensor_loop_function)
 
 print('Creating Webdis Timer')
-def webdis_loop_function(t1):
+def webdis_loop_function(t):
     project.check_wifi()
     project.send_to_webdis()
     project.check_power()
@@ -142,20 +143,23 @@ t1.init(period=30000, callback=webdis_loop_function)
 # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 
 print('Creating Display Update Timer')
-async def display_loop_function(t2):
+def display_loop_function(t):
     project.air()
     project.update_display()
     project.cleanup()
     project.check_reset()
     wdt.feed()
 t2 = Timer(2)
-t2.init(period=60000, callback=display_loop_function)
+t2.init(period=90000, callback=display_loop_function)
 
 print('Running functions on boot')
-sensor_loop_function(t0)
+import _thread
+_thread.start_new_thread(sensor_loop_function,(0,))   # one-time run
+#sensor_loop_function(0)
 sleep_ms(2000)
-asyncio.run(display_loop_function(t2))
-
+display_loop_function(0)
+#_thread.start_new_thread(display_loop_function,(0,))  # one-time run
+exit()
 
 
 '''
@@ -215,4 +219,3 @@ else:
 # List of modules: help('modules')
 # Time Commands: ntp()  time.localtime()  ntptime.settime()
 '''
-
