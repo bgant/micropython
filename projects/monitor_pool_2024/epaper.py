@@ -199,8 +199,8 @@ elif 'TinyS3' in implementation[2]:
             print('Display: Deep Sleep')
             #self.epd.ReadBusy()
             self.epd.sleep()    # Display enters Deep Sleep Mode 01 / To wake call reset() or init()
-            self.epd.spi.deinit()
-            self.epd.cs_pin(1)  # Deselect Shared SPI Peripheral
+            #self.epd.spi.deinit()
+            #self.epd.cs_pin(1)  # Deselect Shared SPI Peripheral
 
 
 '''

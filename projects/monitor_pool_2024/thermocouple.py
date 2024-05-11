@@ -49,7 +49,7 @@ class THERMOCOUPLE:
                 #else:
                     #print(f'Thermocouple Read: {data:.2f} C ... ignoring reading')
                 attempts -= 1
-                sleep_ms(100)
+                sleep_ms(10)
             if len(readings) > 2:
                 readings.remove(max(readings))
                 readings.remove(min(readings))
@@ -60,5 +60,6 @@ class THERMOCOUPLE:
             else:
                 return None
         finally:
-            self.spi.deinit()
-            self.cs(1)  # Deselect Shared SPI Peripheral
+            pass
+            #self.spi.deinit()
+            #self.cs(1)  # Deselect Shared SPI Peripheral
