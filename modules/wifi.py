@@ -54,11 +54,7 @@ class WIFI:
     
     def isconnected(self):
         return self.wlan.isconnected()
-    
-    def disconnect(self):
-        self.wlan.active(False)
-        return 'Wifi Off'
-    
+      
     def connect(self,need_ntp=False):
         if self.wlan.isconnected():
             return 'Wifi is already connected and working'
@@ -78,7 +74,12 @@ class WIFI:
             print('       MAC: ', self.mac)
             print(' Wifi SSID: ', self.ssid_name)
             self.wlan.connect(self.ssid_name, self.ssid_pass)
-            self.status()
+            
+            #while not self.wlan.isconnected():
+            while self.wlan.status() != network.STAT_GOT_IP:
+                print('.', end='')
+                utime.sleep_ms(20)
+            #self.status()
                     
             print()      
             self.ip      = self.wlan.ifconfig()[0]
@@ -92,25 +93,25 @@ class WIFI:
             print()
             if need_ntp:
                 self.ntp()
-            return
         
     def status(self):
         self.start_wifi = utime.ticks_ms()
         while self.wlan.status() != network.STAT_GOT_IP:
             print(' Wifi idle .', end='')
             while self.wlan.status() == network.STAT_IDLE:
-                self.pause(1) 
+                self.pause(10) 
             print(' WiFi connecting .', end='')
             while self.wlan.status() == network.STAT_CONNECTING:
-                self.pause(1)
+                self.pause(10)
             print(' Wifi Security .', end='')
             while '20' in str(self.wlan.status()):  # 20x WRONG_PASSWORD, NO_AP_FOUND, BEACON_TIMEOUT, etc.
-                self.pause(1)
-            utime.sleep(3)
+                self.pause(10)
+            print(' ')
+            utime.sleep(10)
             
-    def pause(self,pause_seconds=1):
+    def pause(self,pause_ms=10):
         print('.', end='')
-        utime.sleep(pause_seconds)
+        utime.sleep(pause_ms)
         self.timeout(timeout_seconds=40)
         
     def timeout(self,timeout_seconds=20):
