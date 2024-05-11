@@ -150,15 +150,11 @@ def display_loop_function(t):
     project.check_reset()
     wdt.feed()
 t2 = Timer(2)
-t2.init(period=90000, callback=display_loop_function)
+t2.init(period=91234, callback=display_loop_function)
 
 print('Running functions on boot')
-import _thread
-_thread.start_new_thread(sensor_loop_function,(0,))   # one-time run
-#sensor_loop_function(0)
-sleep_ms(2000)
+sensor_loop_function(0)
 display_loop_function(0)
-#_thread.start_new_thread(display_loop_function,(0,))  # one-time run
 exit()
 
 
