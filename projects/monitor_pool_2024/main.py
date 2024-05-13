@@ -1,6 +1,8 @@
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer, lightsleep
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
+from micropython import alloc_emergency_exception_buf
+alloc_emergency_exception_buf(100)  # Print Exception Messages from Interrupts/Timers
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
