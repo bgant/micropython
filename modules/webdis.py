@@ -69,9 +69,12 @@ class WEBDIS:
         self.send(command='TS.GET')
 
     def send(self, command=None):
-        r = urequests.get(self.URL)
-        self.webdis_json = r.json()
-        self.response_text = self.webdis_json[command]  # Webdis adds a JSON ['COMMAND'] before string response
+        try:
+            r = urequests.get(self.URL)
+            self.webdis_json = r.json()
+            self.response_text = self.webdis_json[command]  # Webdis adds a JSON ['COMMAND'] before string response
+        except:
+            self.response_text = None
         try:
             self.response_json = json.loads(self.response_text)  # If Webdis string is JSON, convert to JSON format
         except:
