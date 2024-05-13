@@ -131,7 +131,7 @@ print('Creating Sensor Loop Timer')
 def sensor_loop_function(t):
     project.water()
 t0 = Timer(0)
-t0.init(period=5000, callback=sensor_loop_function)
+t0.init(period=5025, callback=sensor_loop_function)
 
 print('Creating Webdis Timer')
 def webdis_loop_function(t):
@@ -139,7 +139,7 @@ def webdis_loop_function(t):
     project.send_to_webdis()
     project.check_power()
 t1 = Timer(1)
-t1.init(period=30000, callback=webdis_loop_function)
+t1.init(period=30550, callback=webdis_loop_function)
 
 print('Creating Display Update Timer')
 def display_loop_function(t):
@@ -149,7 +149,7 @@ def display_loop_function(t):
     project.check_reset()
     wdt.feed()
 t2 = Timer(2)
-t2.init(period=91234, callback=display_loop_function)
+t2.init(period=300275, callback=display_loop_function)
 
 print('Running functions on boot')
 sensor_loop_function(0)
