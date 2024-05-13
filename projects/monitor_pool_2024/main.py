@@ -13,7 +13,6 @@ from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
 from sys import exit, implementation
 from collections import deque
-import _thread
 
 
 class PROJECT:
@@ -72,8 +71,7 @@ class PROJECT:
     def check_wifi(self):
         '''Check if Wifi is still running'''
         if not self.wifi.isconnected() or not self.wifi.active():
-            #self.wifi.connect()
-            _thread.start_new_thread(self.wifi.connect,())
+            self.wifi.connect()
 
     def roundTraditional(self, val,digits):
         '''Rounding like you learned in Math'''
