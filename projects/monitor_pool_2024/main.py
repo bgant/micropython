@@ -13,7 +13,7 @@ from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
 from sys import exit, implementation
 from collections import deque
-import asyncio
+import _thread
 
 
 class PROJECT:
@@ -72,7 +72,8 @@ class PROJECT:
     def check_wifi(self):
         '''Check if Wifi is still running'''
         if not self.wifi.isconnected() or not self.wifi.active():
-            wifi.connect()
+            #self.wifi.connect()
+            _thread.start_new_thread(self.wifi.connect,())
 
     def roundTraditional(self, val,digits):
         '''Rounding like you learned in Math'''
@@ -110,21 +111,6 @@ class PROJECT:
         self.water_last = self.water_average if not type(self.water_average) is float else int(self.roundTraditional(self.water_average,0))
         self.air_last   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))
         self.power_last = True        
-        
-    def tasks(self):
-        '''Main Tasks to Perform'''
-        print('Begin Main Loop')
-        self.check_power()
-        self.check_wifi()
-        self.check_reset()
-        self.water()
-        self.send_to_webdis()
-        self.air()
-        self.update_display()
-        self.cleanup()
-        wdt.feed()
-        print('End Main Loop')
-        print('='*45)
         
 
 project = PROJECT()
