@@ -26,6 +26,7 @@ except OSError:
 
 class WIFI:
     def __init__(self):
+        self.timeout_reset = False
         self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(False)  # Disable on initialization
         
@@ -57,13 +58,14 @@ class WIFI:
       
     def connect(self,need_ntp=False):
         if self.wlan.isconnected():
-            return 'Wifi is already connected and working'
+            return 'Wifi is already connected'
         else:
             self.wlan.active(False)
             utime.sleep_ms(500)
             self.wlan.active(True)
             utime.sleep_ms(500)
             
+            self.start_wifi = utime.ticks_ms()
             self.wlan.config(reconnects=5)
             if 'TinyS3' in implementation[2]:
                 self.wlan.config(pm=self.wlan.PM_NONE)
@@ -76,7 +78,7 @@ class WIFI:
             self.wlan.connect(self.ssid_name, self.ssid_pass)
             
             #while not self.wlan.isconnected():
-            while self.wlan.status() != network.STAT_GOT_IP:
+            while not self.timeout_check() and (self.wlan.status() != network.STAT_GOT_IP):
                 print('.', end='')
                 utime.sleep_ms(20)
             #self.status()
@@ -95,7 +97,6 @@ class WIFI:
                 self.ntp()
         
     def status(self):
-        self.start_wifi = utime.ticks_ms()
         while self.wlan.status() != network.STAT_GOT_IP:
             print(' Wifi idle .', end='')
             while self.wlan.status() == network.STAT_IDLE:
@@ -112,13 +113,18 @@ class WIFI:
     def pause(self,pause_ms=10):
         print('.', end='')
         utime.sleep(pause_ms)
-        self.timeout(timeout_seconds=40)
-        
-    def timeout(self,timeout_seconds=20):
+        self.timeout_check()
+    
+    def timeout_check(self,timeout_seconds=25):
         if utime.ticks_diff(utime.ticks_ms(), self.start_wifi) > (timeout_seconds*1000):  # Wifi timeout in milliseconds
-            print(' Wifi Timeout... Resetting Device')
-            utime.sleep(1)
-            reset()
+            if self.timeout_reset:
+                print(' Wifi Timeout... Resetting Device')
+                utime.sleep(1)
+                reset()
+            else:
+                return True
+        else:
+            return False
 
     def ntp(self):
         print(f'NTP Server:  {ntptime.host} ', end='')
