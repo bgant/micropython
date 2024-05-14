@@ -87,7 +87,7 @@ class PROJECT:
     def send_to_webdis(self):
         '''Send current water temperature to Webdis'''
         self.webdis_water.timeseries(self.webdis_key,self.water_average)
-        print(f'{self.water_now} sent to Webdis {self.webdis_water.webdis_json}')
+        print(f'{self.water_average} sent to Webdis {self.webdis_water.webdis_json}')
     
     def air(self):
         '''Get current "Feels Like" Air temperature'''
