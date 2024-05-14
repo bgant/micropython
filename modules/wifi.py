@@ -80,7 +80,7 @@ class WIFI:
             #while not self.wlan.isconnected():
             while not self.timeout_check() and (self.wlan.status() != network.STAT_GOT_IP):
                 print('.', end='')
-                utime.sleep_ms(20)
+                utime.sleep_ms(200)
             #self.status()
                     
             print()      

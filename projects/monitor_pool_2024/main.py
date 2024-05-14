@@ -55,13 +55,13 @@ class PROJECT:
         if not self.vbus():  # vbus() returns True/False (TinyS3) or 1/0 (TinyPICO)
             if self.power_last:
                 #self.wifi.disconnect()
-                self.epaper.update(power=False)
-                self.epaper.epd.ReadBusy()
-                sleep_ms(2000)
                 self.power_last = False
+                self.epaper.update(power=False)
+                #self.epaper.epd.ReadBusy()
             wdt.feed()
             #lightsleep(30000)
-            return None
+        else:
+            self.power_last = True
 
     def check_reset(self):
         '''Reset and Clear Screen occasionally'''
@@ -103,13 +103,9 @@ class PROJECT:
         elif self.vbus():
             self.epaper.update(water=self.water_average, air=self.air_now)
         #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
-        
-    def cleanup(self):
-        '''End of loop cleanup'''
         self.water_last = self.water_average if not type(self.water_average) is float else int(self.roundTraditional(self.water_average,0))
-        self.air_last   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))
-        self.power_last = True        
-        
+        self.air_last   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))      
+
 
 project = PROJECT()
 
@@ -129,13 +125,12 @@ t1.init(period=30550, callback=webdis_loop_function)
 
 print('Creating Display Update Timer')
 def display_loop_function(t):
+    project.check_reset()
     project.air()
     project.update_display()
-    project.cleanup()
-    project.check_reset()
     wdt.feed()
 t2 = Timer(2)
-t2.init(period=300275, callback=display_loop_function)
+t2.init(period=180275, callback=display_loop_function)
 
 print('Running functions on boot')
 sensor_loop_function(0)
