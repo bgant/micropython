@@ -61,6 +61,8 @@ class PROJECT:
             wdt.feed()
             #lightsleep(30000)
         else:
+            if not self.power_last:
+                reset()
             self.power_last = True
 
     def check_reset(self):
