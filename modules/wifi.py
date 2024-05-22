@@ -69,7 +69,7 @@ class WIFI:
             self.wlan.config(reconnects=5)
             if 'TinyS3' in implementation[2]:
                 self.wlan.config(pm=self.wlan.PM_NONE)
-                self.wlan.config(txpower=5)  # values between 2 and 21 are valid
+                self.wlan.config(txpower=20)  # values between 2 and 21 are valid
             
             self.mac = hexlify(self.wlan.config('mac'),':').decode()
             print('')
