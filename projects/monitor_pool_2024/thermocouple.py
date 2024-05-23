@@ -43,7 +43,7 @@ class THERMOCOUPLE:
             readings = []
             while attempts:
                 data = self.max31856.temperature(read_chip=True)
-                if ( data is not 0.0 ) and ( data < 100 ):  # First reading is sometimes Zero or Low / Sometimes crazy high
+                if 0 < data < 100:  # First Celsius reading is sometimes Zero or Low / Sometimes crazy high
                     #print(f'Thermocouple Read: {data:.2f} C')
                     readings.append(data)
                 #else:

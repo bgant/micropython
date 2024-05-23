@@ -1,6 +1,8 @@
 # Initialize Watchdog Timer
 from machine import reset, WDT, Timer, lightsleep
 wdt = WDT(timeout=600000)  # 10  Minute Hardware Watchdog Timer
+from micropython import alloc_emergency_exception_buf
+alloc_emergency_exception_buf(100)  # Print Exception Messages from Interrupts/Timers
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
@@ -11,7 +13,6 @@ from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
 from sys import exit, implementation
 from collections import deque
-import asyncio
 
 
 class PROJECT:
@@ -54,13 +55,15 @@ class PROJECT:
         if not self.vbus():  # vbus() returns True/False (TinyS3) or 1/0 (TinyPICO)
             if self.power_last:
                 #self.wifi.disconnect()
-                self.epaper.update(power=False)
-                self.epaper.epd.ReadBusy()
-                sleep_ms(2000)
                 self.power_last = False
+                self.epaper.update(power=False)
+                #self.epaper.epd.ReadBusy()
             wdt.feed()
             #lightsleep(30000)
-            return None
+        else:
+            if not self.power_last:
+                reset()
+            self.power_last = True
 
     def check_reset(self):
         '''Reset and Clear Screen occasionally'''
@@ -70,7 +73,7 @@ class PROJECT:
     def check_wifi(self):
         '''Check if Wifi is still running'''
         if not self.wifi.isconnected() or not self.wifi.active():
-            wifi.connect()
+            self.wifi.connect()
 
     def roundTraditional(self, val,digits):
         '''Rounding like you learned in Math'''
@@ -86,7 +89,7 @@ class PROJECT:
     def send_to_webdis(self):
         '''Send current water temperature to Webdis'''
         self.webdis_water.timeseries(self.webdis_key,self.water_average)
-        print(f'{self.water_now} sent to Webdis {self.webdis_water.webdis_json}')
+        print(f'{self.water_average} sent to Webdis {self.webdis_water.webdis_json}')
     
     def air(self):
         '''Get current "Feels Like" Air temperature'''
@@ -102,28 +105,9 @@ class PROJECT:
         elif self.vbus():
             self.epaper.update(water=self.water_average, air=self.air_now)
         #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
-        
-    def cleanup(self):
-        '''End of loop cleanup'''
         self.water_last = self.water_average if not type(self.water_average) is float else int(self.roundTraditional(self.water_average,0))
-        self.air_last   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))
-        self.power_last = True        
-        
-    def tasks(self):
-        '''Main Tasks to Perform'''
-        print('Begin Main Loop')
-        self.check_power()
-        self.check_wifi()
-        self.check_reset()
-        self.water()
-        self.send_to_webdis()
-        self.air()
-        self.update_display()
-        self.cleanup()
-        wdt.feed()
-        print('End Main Loop')
-        print('='*45)
-        
+        self.air_last   =   self.air_now if not type(self.air_now)   is float else int(self.roundTraditional(self.air_now,0))      
+
 
 project = PROJECT()
 
@@ -143,13 +127,12 @@ t1.init(period=30550, callback=webdis_loop_function)
 
 print('Creating Display Update Timer')
 def display_loop_function(t):
+    project.check_reset()
     project.air()
     project.update_display()
-    project.cleanup()
-    project.check_reset()
     wdt.feed()
 t2 = Timer(2)
-t2.init(period=300275, callback=display_loop_function)
+t2.init(period=180275, callback=display_loop_function)
 
 print('Running functions on boot')
 sensor_loop_function(0)
