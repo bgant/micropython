@@ -18,7 +18,8 @@ import json
 
 try:
     f = open('key_store.py','r')
-    from key_store import KEY_STORE
+    import key_store
+    key_store.enable() # Just in case another module closed it
 except OSError:
     print('key_store.py required to use this module')    
     exit()
@@ -26,7 +27,6 @@ except OSError:
 ###################################
 # Load secrets from key_store.db
 ###################################
-key_store = KEY_STORE()
 if key_store.get('webdis_host') and key_store.get('webdis_port'):
     webdis_host = key_store.get('webdis_host')  # Webdis Host
     webdis_port = key_store.get('webdis_port')  # Webdis Port
@@ -35,7 +35,7 @@ else:  # key_store values are empty
     webdis_port = input('Enter Webdis Port - ')
     key_store.set('webdis_host',webdis_host)
     key_store.set('webdis_port',webdis_port)
-key_store.db.close()
+key_store.close()
 
 
 class WEBDIS:
@@ -44,7 +44,7 @@ class WEBDIS:
         self.host = webdis_host
         self.port = webdis_port
         if '443' in webdis_port:
-            self.URL_base = f'https://{self.host}/webdis/'
+            self.URL_base = f'https://{self.host}/'
         else:
             self.URL_base = f'http://{self.host}:{self.port}/' 
 

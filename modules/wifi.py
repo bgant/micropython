@@ -19,7 +19,9 @@ from sys import exit, implementation
 try:
     f = open('key_store.py','r')
     f.close()
-    from key_store import KEY_STORE
+    #from key_store import KEY_STORE
+    import key_store
+    key_store.enable()  # Just in case another module closed it
 except OSError:
     print('key_store.py is required to use this module')    
     exit()
@@ -31,7 +33,6 @@ class WIFI:
         self.wlan.active(False)  # Disable on initialization
         
         # Load secrets from local key_store.db
-        key_store = KEY_STORE()
         if key_store.get('ssid_name') and key_store.get('ssid_pass'):
             self.ssid_name = key_store.get('ssid_name')
             self.ssid_pass = key_store.get('ssid_pass')
@@ -42,7 +43,7 @@ class WIFI:
             key_store.set('ssid_pass',self.ssid_pass)
         if key_store.get('ntp_host'):
             ntptime.host = key_store.get('ntp_host')
-        key_store.db.close()
+        key_store.close()
         
         self.mac = ''
         self.ip = ''
