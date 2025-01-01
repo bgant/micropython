@@ -3,69 +3,74 @@ MicroPython:          https://docs.micropython.org/en/latest/
 
 Brandon Gant
 Created: 2019-03-28
-Updated: 2024-03-15
+Updated: 2025-01-01
 
 Usage:
    import key_store
-   key_store.init()              <-- Creates key_store.db if it does not exist
    key_store.set('key','value')  <-- Sets key/value in database
    key_store.get('key')          <-- Gets value from database
    key_store.delete('key')       <-- Deletes key/value in database
-   key_store.dumptext()          <-- Prints contents of key_store.db to screen
-   key_store.dumpfile()          <-- Dumps contents of key_store.db to key_store.txt which ampy can retrieve
-   key_store.wipe()              <-- Removes key_store.db file
+   key_store.show()              <-- Prints contents of key_store.db to screen
+   key_store.export()            <-- Dumps contents of key_store.db to key_store.txt
+   key_store.close()             <-- Mandatory to close everything when no longer needed
+   key_store.open()              <-- Reopen access to key_store.db
 
 This script keeps private settings out of github and also logs everything locally if needed.
 '''
 
 import btree
 
-class KEY_STORE:
-    '''Stores secret or custom variables for use by scripts'''
-    
-    def __init__(self):
-        '''Create a new key_store.db database or update config settings'''
-        self.file = 'key_store.db'
-        try:
-            f = open(self.file, 'r+b')  # Opens existing key_store.db
-        except OSError:
-            f = open(self.file, 'w+b')  # Creates key_store.db on storage
-            f.close()
-            f = open(self.file, 'r+b')
-        self.db = btree.open(f)
+file = 'key_store.db'
 
-    def set(self,key,value):
-        '''Add new key/value pairs to key_store.db '''
-        self.db[key] = value
-        self.db.flush()
+def enable():
+    '''Open up the database for read/write access'''
+    global f
+    try:
+        f = open(file, 'r+b')  # Opens existing key_store.db
+    except OSError:
+        f = open(file, 'w+b')  # Creates key_store.db on storage
+    global db
+    db = btree.open(f)
 
-    def get(self,key):
-        '''Retrieve data from key_store.db'''
-        try:
-            return self.db[key].decode('utf-8')
-        except KeyError:
-            return None
+def close():
+    '''
+    Closing the database at the end of processing is mandatory because
+    some of the unwritten data may remain in the cache. Closing the file 
+    stream is also mandatory to ensure that data flushed from the buffer
+    goes into the underlying storage.
+    '''
+    db.close()
+    f.close()
 
-    def delete(self,key):
-        '''Delete data from key_store.db'''
-        del self.db[key]
-        self.db.flush()
+def set(key,value):
+    '''Add new key/value pairs to key_store.db '''
+    db[key] = value
+    db.flush()
 
-    def dumptext(self):
-        '''Prints contents of key_store.db ''' 
-        for key in self.db:
-            print(key.decode('utf-8'), self.db[key].decode('utf-8'))
+def get(key):
+    '''Retrieve data from key_store.db'''
+    try:
+        return db[key].decode('utf-8')
+    except KeyError:
+        return None
 
-    def dumpfile(self):
-        '''Dumps key_store.db contects to key_store.txt file'''
-        with open('key_store.txt', 'wt') as text:
-            for key in self.db:
-                pair = "{}:{}\n".format(key.decode('utf-8'), self.db[key].decode('utf-8'))
-                text.write(pair)
-        print('key_store.txt created')
+def delete(key):
+    '''Delete data from key_store.db'''
+    del db[key]
+    db.flush()
 
-    def wipe(self):
-        '''Removes key_store.db''' 
-        import uos
-        uos.remove(self.file)
-        print(f'{self.file} removed')
+def show():
+    '''Prints contents of key_store.db ''' 
+    for key in db:
+        print(key.decode('utf-8'), db[key].decode('utf-8'))
+
+def export():
+    '''Dumps key_store.db contents to key_store.txt file'''
+    with open('key_store.txt', 'wt') as text:
+        for key in db:
+            pair = "{}:{}\n".format(key.decode('utf-8'), db[key].decode('utf-8'))
+            text.write(pair)
+    print('key_store.txt created')
+
+enable()  # Open key_store.db database on import
+
