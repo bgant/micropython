@@ -23,20 +23,21 @@ except OSError:
     print('key_store.py required to use this module')    
     exit()
     
+key_store.enable()
+if key_store.get('webdis_host') and key_store.get('webdis_port'):
+    webdis_host = key_store.get('webdis_host')  # Webdis Host
+    webdis_port = key_store.get('webdis_port')  # Webdis Port
+else:  # key_store values are empty
+    webdis_host = input('Enter Webdis Host Name or IP - ')
+    webdis_port = input('Enter Webdis Port - ')
+    key_store.set('webdis_host',webdis_host)
+    key_store.set('webdis_port',webdis_port)
+key_store.close()
 
 class WEBDIS:
     def __init__(self):
-        key_store.enable()
-        if key_store.get('webdis_host') and key_store.get('webdis_port'):
-            self.host = key_store.get('webdis_host')  # Webdis Host
-            self.port = key_store.get('webdis_port')  # Webdis Port
-        else:  # key_store values are empty
-            self.host = input('Enter Webdis Host Name or IP - ')
-            self.port = input('Enter Webdis Port - ')
-            key_store.set('webdis_host',self.host)
-            key_store.set('webdis_port',self.port)
-        key_store.close()
-
+        self.host = webdis_host
+        self.port = webdis_port
         if '443' in self.port:
             self.URL_base = f'https://{self.host}/'
         else:
