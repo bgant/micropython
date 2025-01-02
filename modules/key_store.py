@@ -17,6 +17,12 @@ Usage:
    key_store.clear()             <-- Removes key_store.db
 
 This script keeps private settings out of github and also logs everything locally if needed.
+
+RULES:
+  1) key_store.py should be a module with functions (not Class)
+  2) Access to key_store.py should be done after import (not as part of Class)
+  3) Closing key_store.py seems to cause more problems than leaving it open,
+     but feel free to close it if you know your script is done using it.
 '''
 
 import btree
@@ -41,6 +47,7 @@ def close():
     goes into the underlying storage.
     '''
     global db
+    db.flush()
     db.close()
     global f
     f.close()
@@ -48,52 +55,46 @@ def close():
 def set(key,value):
     '''Add new key/value pairs to key_store.db '''
     global db
-    enable()
     db[key] = value
     db.flush()
-    close()
 
 def get(key):
     '''Retrieve data from key_store.db'''
     try:
         global db
-        enable()
         return db[key].decode('utf-8')
-        close()
     except KeyError:
         return None
-
 
 def delete(key):
     '''Delete data from key_store.db'''
     global db
-    enable()
     del db[key]
     db.flush()
-    close()
 
 def show():
     '''Prints contents of key_store.db ''' 
     global db
-    enable()
     for key in db:
         print(key.decode('utf-8'), db[key].decode('utf-8'))
-    close()
 
 def export():
     '''Dumps key_store.db contents to key_store.txt file'''
     global db
-    enable()
     with open('key_store.txt', 'wt') as text:
         for key in db:
             pair = "{}:{}\n".format(key.decode('utf-8'), db[key].decode('utf-8'))
             text.write(pair)
     print('key_store.txt created')
-    close()
 
 def clear():
     '''Removes key_store.db'''
+    close()
     import uos
     uos.remove(file)
     print('%s removed' % file)
+
+
+# Enable key_store.py on import and leave open
+enable()
 

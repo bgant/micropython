@@ -25,23 +25,27 @@ except OSError:
     print('key_store.py is required to use this module')    
     exit()
 
+# Load secrets from local key_store.db
+if key_store.get('ssid_name') and key_store.get('ssid_pass'):
+    ssid_name = key_store.get('ssid_name')
+    ssid_pass = key_store.get('ssid_pass')
+else:  # key_store values are empty
+    ssid_name = input('Enter WiFi SSID - ')
+    ssid_pass = input('Enter WiFi password - ')
+    key_store.set('ssid_name',ssid_name)
+    key_store.set('ssid_pass',ssid_pass)
+if key_store.get('ntp_host'):
+    ntptime.host = key_store.get('ntp_host')
+
+
 class WIFI:
     def __init__(self):
         self.timeout_reset = False
         self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(False)  # Disable on initialization
-        
-        # Load secrets from local key_store.db
-        if key_store.get('ssid_name') and key_store.get('ssid_pass'):
-            self.ssid_name = key_store.get('ssid_name')
-            self.ssid_pass = key_store.get('ssid_pass')
-        else:  # key_store values are empty
-            self.ssid_name = input('Enter WiFi SSID - ')
-            self.ssid_pass = input('Enter WiFi password - ')
-            key_store.set('ssid_name',self.ssid_name)
-            key_store.set('ssid_pass',self.ssid_pass)
-        if key_store.get('ntp_host'):
-            ntptime.host = key_store.get('ntp_host')
+
+        self.ssid_name = ssid_name
+        self.ssid_pass = ssid_pass
         
         self.mac = ''
         self.ip = ''
