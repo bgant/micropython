@@ -47,7 +47,10 @@ def close():
     goes into the underlying storage.
     '''
     global db
-    db.flush()
+    try: 
+        db.flush()  # This causes an error if key_store.db is already closed
+    except:
+        pass
     db.close()
     global f
     f.close()
