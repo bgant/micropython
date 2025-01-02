@@ -32,7 +32,6 @@ class WIFI:
         self.wlan.active(False)  # Disable on initialization
         
         # Load secrets from local key_store.db
-        key_store.enable()
         if key_store.get('ssid_name') and key_store.get('ssid_pass'):
             self.ssid_name = key_store.get('ssid_name')
             self.ssid_pass = key_store.get('ssid_pass')
@@ -43,7 +42,6 @@ class WIFI:
             key_store.set('ssid_pass',self.ssid_pass)
         if key_store.get('ntp_host'):
             ntptime.host = key_store.get('ntp_host')
-        key_store.close()
         
         self.mac = ''
         self.ip = ''
