@@ -14,6 +14,7 @@ Usage:
    key_store.export()            <-- Dumps contents of key_store.db to key_store.txt
    key_store.close()             <-- Mandatory to close everything when no longer needed
    key_store.open()              <-- Reopen access to key_store.db
+   key_store.clear()             <-- Removes key_store.db
 
 This script keeps private settings out of github and also logs everything locally if needed.
 '''
@@ -71,6 +72,12 @@ def export():
             pair = "{}:{}\n".format(key.decode('utf-8'), db[key].decode('utf-8'))
             text.write(pair)
     print('key_store.txt created')
+
+def clear():
+    '''Removes key_store.db'''
+    import uos
+    uos.remove(file)
+    print('%s removed' % file)
 
 enable()  # Open key_store.db database on import
 
