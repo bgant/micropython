@@ -79,5 +79,3 @@ def clear():
     uos.remove(file)
     print('%s removed' % file)
 
-enable()  # Open key_store.db database on import
-
