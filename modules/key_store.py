@@ -79,3 +79,6 @@ def clear():
     uos.remove(file)
     print('%s removed' % file)
 
+# Enable on import
+enable()
+
