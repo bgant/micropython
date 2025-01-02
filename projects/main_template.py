@@ -5,8 +5,7 @@ main_interval = 60         # Time in seconds between loops
 state = 'loop'            # while 'loop' or 'timer'
 
 # Load key_store/secrets
-from key_store import KEY_STORE
-key_store = KEY_STORE()
+from key_store
 
 # Connect to Wifi and set Clock
 from wifi import WIFI
