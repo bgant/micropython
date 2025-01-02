@@ -47,10 +47,6 @@ def close():
     goes into the underlying storage.
     '''
     global db
-    try: 
-        db.flush()  # This causes an error if key_store.db is already closed
-    except:
-        pass
     db.close()
     global f
     f.close()
@@ -72,8 +68,12 @@ def get(key):
 def delete(key):
     '''Delete data from key_store.db'''
     global db
-    del db[key]
-    db.flush()
+    try:
+       del db[key]
+       db.flush()
+       print(f'{key} deleted')
+    except KeyError:
+       print(f'{key} does not exist')
 
 def show():
     '''Prints contents of key_store.db ''' 
