@@ -5,32 +5,40 @@ main_interval = 60         # Time in seconds between Timer loops
 state = 'timer'            # while 'loop' or 'timer'
 
 import key_store
-
 from wifi import WIFI
+from webdis import WEBDIS
+import uping
+
+# Get Sensor Pin from key_store.db
+if key_store.get('sensor_pin'):
+    sensor_pin = key_store.get('sensor_pin')
+else:
+    sensor_pin = input('Enter Sensor Pin - ')  # 2.5V Input Pin (any GPIO pin should work)
+    key_store.set('sensor_pin',sensor_pin)
+power = Pin(int(sensor_pin), Pin.IN)
+
+# Get Webdis key from key_store.db
+if key_store.get('webdis_key'):
+    webdis_key = key_store.get('webdis_key')  # Webdis Key Name
+else:  # key_store value is empty
+    webdis_key = input('Enter Webdis Key Name - ')
+    key_store.set('webdis_key',self.webdis_key)
+
+# Create webdis object
+webdis = WEBDIS()
+
+# Setup Wifi
 wifi = WIFI()
 wifi.connect()
 
-from webdis import WEBDIS
-webdis = WEBDIS()
+# key_store.db is no longer needed
+key_store.close()
 
-import uping
 
 class PROJECT:
     def __init__(self):
-        key_store.enable()
-        if key_store.get('sensor_pin'):
-            self.sensor_pin = key_store.get('sensor_pin')
-        else:
-            self.sensor_pin = input('Enter Sensor Pin - ')  # 2.5V Input Pin (any GPIO pin should work)
-            key_store.set('sensor_pin',self.sensor_pin)
-        self.power = Pin(int(self.sensor_pin), Pin.IN)
-
-        if key_store.get('webdis_key'):
-            self.webdis_key = key_store.get('webdis_key')  # Webdis Key Name
-        else:  # key_store value is empty
-            self.webdis_key = input('Enter Webdis Key Name - ')
-            key_store.set('webdis_key',self.webdis_key)
-        key_store.close()  # Close database and file when finished using it
+        self.power = power
+        self.webdis_key = webdis_key
 
     def network_fail(self):
         print('Unable to access network... resetting...')
