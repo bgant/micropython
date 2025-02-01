@@ -5,7 +5,7 @@ main_interval = 60         # Time in seconds between loops
 state = 'loop'            # while 'loop' or 'timer'
 
 # Load key_store/secrets
-from key_store
+import key_store
 
 # Connect to Wifi and set Clock
 from wifi import WIFI
@@ -41,6 +41,7 @@ if state is 'timer':
     # View Timer value: timer_main.value()   Stop Timer: timer_main.deinit()
 elif state is 'loop':
     print('main.py running in while True loop (Ctrl+C to REPL)')
+    from time import sleep_ms
     while True:
         timer_function(None)
         sleep_ms(main_interval*1000)
