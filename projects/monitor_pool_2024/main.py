@@ -6,7 +6,7 @@ alloc_emergency_exception_buf(100)  # Print Exception Messages from Interrupts/T
 
 # Import modules
 from time import sleep_ms, localtime, ticks_ms, ticks_diff
-from key_store import KEY_STORE
+import key_store
 from wifi import WIFI
 from webdis import WEBDIS
 from thermocouple import THERMOCOUPLE
@@ -41,13 +41,11 @@ class PROJECT:
             from machine import Pin       # GPIO 9 is "Detect 5V Present"
             self.vbus = Pin(9, Pin.IN)    # type(vbus) is <class 'Pin'>
         
-        self.key_store = KEY_STORE()
-        if self.key_store.get('webdis_key'):
-            self.webdis_key = self.key_store.get('webdis_key')  # Webdis Water Temperature Data
+        if key_store.get('webdis_key'):
+            self.webdis_key = key_store.get('webdis_key')  # Webdis Water Temperature Data
         else:  # key_store values are empty
             self.webdis_key = input('Enter Webdis Key for storing Water Temp - ')
-            self.key_store.set('webdis_key',self.webdis_key)
-        self.key_store.db.close()
+            key_store.set('webdis_key',self.webdis_key)
         self.wifi.connect()
 
     def check_power(self):
@@ -137,7 +135,6 @@ t2.init(period=180275, callback=display_loop_function)
 print('Running functions on boot')
 sensor_loop_function(0)
 display_loop_function(0)
-exit()
 
 
 '''

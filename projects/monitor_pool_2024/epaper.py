@@ -19,8 +19,7 @@ from writer import Writer
 # mpremote a0 mip install --target= github:bgant/micropython/projects/monitor_pool_2024/GothamBlack_25.py
 import GothamBlack_54_Numbers
 import GothamBlack_25
-from key_store import KEY_STORE
-key_store = KEY_STORE()
+import key_store
 
 # Load secrets from local key_store.db
 if key_store.get('display_type'):
@@ -197,7 +196,7 @@ elif 'TinyS3' in implementation[2]:
                 self.display()
         finally:
             print('Display: Deep Sleep')
-            #self.epd.ReadBusy()
+            self.epd.ReadBusy()
             self.epd.sleep()    # Display enters Deep Sleep Mode 01 / To wake call reset() or init()
             #self.epd.spi.deinit()
             #self.epd.cs_pin(1)  # Deselect Shared SPI Peripheral

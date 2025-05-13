@@ -11,7 +11,7 @@ from sys import implementation
 ###################################
 # mpremote a0 mip install --target= github:eliotb/micropython-max31856/max31856.py
 from max31856 import Max31856
-from key_store import KEY_STORE
+import key_store
 
 class THERMOCOUPLE:
     def __init__(self):
@@ -26,12 +26,10 @@ class THERMOCOUPLE:
             self.cs = Pin(6, Pin.OUT)   # Assign device its own chip select (CS) pin
         self.max31856 = Max31856(self.spi, self.cs, tc_type)
         
-        key_store = KEY_STORE()
         if key_store.get('thermocouple_adjustment'):
             self.adjustment = float(key_store.get('thermocouple_adjustment'))  # Temperature (C) adjustment from test with Thermometers
         else:
             self.adjustment = 0.0
-        key_store.db.close()
 
     def read(self):
         '''Read Thermocouple Temperature'''
