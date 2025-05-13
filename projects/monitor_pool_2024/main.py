@@ -30,7 +30,8 @@ class PROJECT:
         self.water_last = None
         self.air_last = None
         self.power_last = True
-        
+        self.display_lock = False
+
         self.water_deque = deque((),60)
         self.water_average = None
         
@@ -113,24 +114,28 @@ print('Creating Sensor Loop Timer')
 def sensor_loop_function(t):
     project.water()
 t0 = Timer(0)
-t0.init(period=5025, callback=sensor_loop_function)
+t0.init(period=5003, callback=sensor_loop_function)
 
 print('Creating Webdis Timer')
 def webdis_loop_function(t):
-    project.check_wifi()
-    project.send_to_webdis()
-    project.check_power()
+    if not project.display_lock:
+        project.check_power()
+        project.check_wifi()
+        project.send_to_webdis()
 t1 = Timer(1)
-t1.init(period=30550, callback=webdis_loop_function)
+t1.init(period=10247, callback=webdis_loop_function)
 
 print('Creating Display Update Timer')
 def display_loop_function(t):
-    project.check_reset()
-    project.air()
-    project.update_display()
-    wdt.feed()
+    if project.power_last:
+        project.display_lock = True
+        project.check_reset()
+        project.air()
+        project.update_display()
+        project.display_lock = False
+        wdt.feed()
 t2 = Timer(2)
-t2.init(period=180275, callback=display_loop_function)
+t2.init(period=180757, callback=display_loop_function)
 
 print('Running functions on boot')
 sensor_loop_function(0)
