@@ -13,6 +13,7 @@ from thermocouple import THERMOCOUPLE
 from epaper import EPAPER
 from sys import exit, implementation
 from collections import deque
+#import TinyPICO_RGB as led
 
 
 class PROJECT:
@@ -37,10 +38,10 @@ class PROJECT:
         
         if 'TinyS3' in implementation[2]:
             from tinys3 import get_vbus_present
-            self.vbus = get_vbus_present  # type(vbus) is <class 'function'>
+            self.vbus = get_vbus_present             # type(vbus) is <class 'function'>
         elif 'TinyPICO' in implementation[2]:
-            from machine import Pin       # GPIO 9 is "Detect 5V Present"
-            self.vbus = Pin(9, Pin.IN)    # type(vbus) is <class 'Pin'>
+            from machine import Pin                  # GPIO 9 is "Detect 5V Present"
+            self.vbus = Pin(9, Pin.IN, Pin.PULL_UP)  # type(vbus) is <class 'Pin'>
         
         if key_store.get('webdis_key'):
             self.webdis_key = key_store.get('webdis_key')  # Webdis Water Temperature Data
@@ -52,17 +53,23 @@ class PROJECT:
     def check_power(self):
         '''Check if Power is connected to USB'''
         if not self.vbus():  # vbus() returns True/False (TinyS3) or 1/0 (TinyPICO)
+            #led.solid(0,255,255) # Cyan
             if self.power_last:
+                #led.solid(255,0,0) # Red
                 #self.wifi.disconnect()
-                self.power_last = False
+                self.display_lock = True
                 self.epaper.update(power=False)
-                #self.epaper.epd.ReadBusy()
+                sleep_ms(10000)
+                self.display_lock = False
+                self.power_last = False
             wdt.feed()
             #lightsleep(30000)
         else:
+            #led.solid(255,255,0) # Yellow
             if not self.power_last:
                 reset()
-            self.power_last = True
+            else:
+                self.power_last = True
 
     def check_reset(self):
         '''Reset and Clear Screen occasionally'''
@@ -101,7 +108,7 @@ class PROJECT:
         air_text   = int(self.roundTraditional(self.air_now,0))   if type(self.air_now)   is float else self.air_now    # str or None
         if (water_text is self.water_last) and (air_text is self.air_last):
             print('No Temperature Changes... Skipping Display Update')
-        elif self.vbus():
+        else:
             self.epaper.update(water=self.water_average, air=self.air_now)
         #print(f'Memory Free:   {int(gc.mem_free()/1024)}KB')
         self.water_last = self.water_average if not type(self.water_average) is float else int(self.roundTraditional(self.water_average,0))
@@ -120,17 +127,19 @@ print('Creating Webdis Timer')
 def webdis_loop_function(t):
     if not project.display_lock:
         project.check_power()
-        project.check_wifi()
+    if project.wifi.isconnected():
         project.send_to_webdis()
 t1 = Timer(1)
 t1.init(period=10247, callback=webdis_loop_function)
 
 print('Creating Display Update Timer')
 def display_loop_function(t):
-    if project.power_last:
-        project.display_lock = True
+    if project.vbus():
+        #led.solid(255,0,255) # Purple
         project.check_reset()
+        project.check_wifi()
         project.air()
+        project.display_lock = True
         project.update_display()
         project.display_lock = False
         wdt.feed()
