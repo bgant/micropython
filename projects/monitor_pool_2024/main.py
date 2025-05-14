@@ -38,9 +38,9 @@ class PROJECT:
         
         if 'TinyS3' in implementation[2]:
             from tinys3 import get_vbus_present
-            self.vbus = get_vbus_present             # type(vbus) is <class 'function'>
+            self.vbus = get_vbus_present               # type(vbus) is <class 'function'>
         elif 'TinyPICO' in implementation[2]:
-            from machine import Pin                  # GPIO 9 is "Detect 5V Present"
+            from machine import Pin                    # GPIO 9 is "Detect 5V Present"
             self.vbus = Pin(9, Pin.IN, Pin.PULL_UP)  # type(vbus) is <class 'Pin'>
         
         if key_store.get('webdis_key'):
@@ -52,24 +52,17 @@ class PROJECT:
 
     def check_power(self):
         '''Check if Power is connected to USB'''
+        if self.vbus() and not self.power_last: # Power now, but not before, Reset
+                reset()
         if not self.vbus():  # vbus() returns True/False (TinyS3) or 1/0 (TinyPICO)
             #led.solid(0,255,255) # Cyan
-            if self.power_last:
+            if self.power_last: # First loop without power
                 #led.solid(255,0,0) # Red
-                #self.wifi.disconnect()
                 self.display_lock = True
                 self.epaper.update(power=False)
-                sleep_ms(10000)
                 self.display_lock = False
                 self.power_last = False
             wdt.feed()
-            #lightsleep(30000)
-        else:
-            #led.solid(255,255,0) # Yellow
-            if not self.power_last:
-                reset()
-            else:
-                self.power_last = True
 
     def check_reset(self):
         '''Reset and Clear Screen occasionally'''
@@ -125,9 +118,10 @@ t0.init(period=5003, callback=sensor_loop_function)
 
 print('Creating Webdis Timer')
 def webdis_loop_function(t):
+    #led.solid(255,255,0) # Yellow
     if not project.display_lock:
         project.check_power()
-    if project.wifi.isconnected():
+    if project.wifi.active() and project.wifi.isconnected():
         project.send_to_webdis()
 t1 = Timer(1)
 t1.init(period=10247, callback=webdis_loop_function)
