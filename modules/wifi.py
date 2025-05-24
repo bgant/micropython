@@ -72,7 +72,10 @@ class WIFI:
             self.wlan.config(reconnects=5)
             if 'TinyS3' in implementation[2]:
                 self.wlan.config(pm=self.wlan.PM_NONE)
-                self.wlan.config(txpower=20)  # values between 2 and 21 are valid
+                self.wlan.config(txpower=16)  # values between 2 and 21 are valid (default is 20)
+                # Older TinyS3 devices have wifi connectivity issues:
+                #   1) Must use 2.4GHz Channel 9 or above or signal loss occurs
+                #   2) txpower must be 16 or maybe 17
             
             self.mac = hexlify(self.wlan.config('mac'),':').decode()
             print('')
